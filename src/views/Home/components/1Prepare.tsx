@@ -4,6 +4,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput'
 import FormControl from '@material-ui/core/FormControl'
 import PublishSharpIcon from '@material-ui/icons/PublishSharp'
 import { useDropzone } from 'react-dropzone'
+import { ethers } from 'ethers'
 
 import SelectOption from '../../../components/SelectOptiion'
 
@@ -11,8 +12,12 @@ export default function Prepare() {
   const [toAddressText, setToAddressText] = useState<string>('Insert Manually')
   const [decimalText, setDeciamText] = useState<string>('18')
   const [listOfAddresses, setListOfAddresses] = useState<any>([])
-  const [enteredAdrs, setEnteredAdrs] = useState<any>('')
+  const [enteredAdrs, setEnteredAdrs] = useState<string>('')
+  // const [addressError, setAddressError] = useState<any>([])
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone()
+
+  let addressError: string[]
+  addressError = []
 
   const files = acceptedFiles?.map((file) => {
     return (
@@ -21,6 +26,27 @@ export default function Prepare() {
       </li>
     )
   })
+
+  const handleValidate = async () => {
+    await setListOfAddresses(enteredAdrs.split(/\n/g))
+
+    listOfAddresses?.forEach((item: any, index: any) => {
+      let indexOfComma = item.indexOf(',')
+
+      let valueTobeSent = item.slice(indexOfComma + 1, item.length)
+
+      if (!ethers.utils.isAddress(item.slice(0, indexOfComma)))
+        addressError.push(`${item.slice(0, indexOfComma)} is invalid Address`)
+
+      if (valueTobeSent <= 0)
+        addressError.push(`${valueTobeSent} is invalid value`)
+    })
+    console.log('addressError', addressError)
+
+    console.log('addressess', enteredAdrs.split(/\n/g))
+  }
+
+  console.log('listOfAddresses', listOfAddresses)
 
   return (
     <section className="container bg_443E3A">
@@ -78,11 +104,13 @@ export default function Prepare() {
               onChange={(e) => {
                 setEnteredAdrs(e.target.value)
               }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  setListOfAddresses([...listOfAddresses, enteredAdrs])
-                }
-              }}
+              // onKeyDown={(e) => {
+              //   if (e.key === 'Enter') {
+              //     setListOfAddresses([...listOfAddresses, enteredAdrs])
+              //   }
+              // }}
+              // onKeyUp={(e) => {}}
+
               aria-describedby="outlined-weight-helper-text"
               inputProps={{
                 'aria-label': 'weight',
@@ -90,15 +118,22 @@ export default function Prepare() {
               labelWidth={0}
               className={'white_text'}
               multiline
-              rows={4}
+              rows={5}
             />
           </FormControl>
 
-          <ol>
+          {/* <ol>
             {listOfAddresses?.map((address: any) => (
               <li key={address}> {address} </li>
             ))}
+          </ol> */}
+          <ol>
+            {addressError?.map((item: any, i: any) => (
+              <li key={i}> {item} </li>
+            ))}
           </ol>
+          <br />
+          <button onClick={handleValidate}>Test</button>
         </section>
       ) : (
         <section>
@@ -109,9 +144,9 @@ export default function Prepare() {
               <PublishSharpIcon />
             </div>
           </Dropfile>
-          <aside>
+          <div>
             <ul>{files}</ul>
-          </aside>
+          </div>
         </section>
       )}
     </section>

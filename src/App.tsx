@@ -9,7 +9,9 @@ function App() {
   return (
     <UseWalletProvider
       // chainId={config.chainId}
-      connectors={{ injected: {} }}
+      connectors={{ injected: { chainId: [97] } }}
+      // chainId={config.chainId}
+      // connectors={{ injected: {} }}
     >
       <Navbar />
       <div className={'container'}>

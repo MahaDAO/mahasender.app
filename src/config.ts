@@ -33,4 +33,4 @@ export const projects: PROJECTS = {
 	scallop: "SCLP"
 }
 
-export default configurations[process.env.REACT_APP_NETWORK || "bsc"]
+export default configurations[process.env.REACT_APP_NETWORK || "bscTestnet"]

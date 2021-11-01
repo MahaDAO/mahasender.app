@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 import {
   makeStyles,
   Theme,
@@ -18,8 +19,10 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import { StepIconProps } from '@material-ui/core/StepIcon'
 
-import Prepare from './components/Prepare'
-import styled from 'styled-components'
+import Prepare from './components/1Prepare'
+import Approve from './components/2Approve'
+import Confirm from './components/3Confirm'
+import Send from './components/4Send'
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -100,11 +103,11 @@ function getStepContent(step: number) {
     case 0:
       return <Prepare />
     case 1:
-      return 'Approve'
+      return <Approve />
     case 2:
-      return 'Confirm'
+      return <Confirm />
     case 3:
-      return 'Send'
+      return <Send />
     default:
       return 'Unknown step'
   }

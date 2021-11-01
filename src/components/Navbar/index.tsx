@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { useWallet } from 'use-wallet'
 
 export default function Navbar() {
-  const { account, connect } = useWallet()
+  const { account, connect, reset } = useWallet()
 
   return (
     <NavbarContainer className="container">
@@ -22,7 +22,16 @@ export default function Navbar() {
           >
             Connect Wallet
           </button>
-        ) : null}
+        ) : (
+          <button
+            className="btn_outlined"
+            onClick={() => {
+              reset()
+            }}
+          >
+            {account}
+          </button>
+        )}
       </div>
     </NavbarContainer>
   )
