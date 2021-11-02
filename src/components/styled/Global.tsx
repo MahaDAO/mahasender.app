@@ -64,6 +64,9 @@ const GlobalStyles = createGlobalStyle`
     border-right: 1px solid rgba(194, 181, 181, 0.3);
   }
 
+  .text_center{
+    text-align: center;
+  }
 
   /* margins */
 
@@ -107,6 +110,13 @@ const GlobalStyles = createGlobalStyle`
   .flex_row {
     display: flex !important;
     flex-direction: row !important;
+  }
+
+  .flex_row_center_start{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   /* customized material ui components */

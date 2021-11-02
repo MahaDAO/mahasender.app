@@ -7,7 +7,7 @@ import { useDropzone } from 'react-dropzone'
 import { ethers } from 'ethers'
 
 import SelectOption from '../../../components/SelectOptiion'
-
+import ImportCSV from '../../../components/ImportCSV'
 export default function Prepare() {
   const [toAddressText, setToAddressText] = useState<string>('Insert Manually')
   const [decimalText, setDeciamText] = useState<string>('18')
@@ -137,13 +137,10 @@ export default function Prepare() {
         </section>
       ) : (
         <section>
-          <Dropfile className="">
-            <div {...getRootProps({ className: '' })}>
-              <input {...getInputProps()} />
-              <p>Drag 'n' drop some files here, or click to select files</p>
-              <PublishSharpIcon />
-            </div>
+          <Dropfile className="text_center">
+            <ImportCSV />
           </Dropfile>
+
           <div>
             <ul>{files}</ul>
           </div>
