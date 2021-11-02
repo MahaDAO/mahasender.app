@@ -1,0 +1,10 @@
+{
+  "MahaToken": {
+    "abi": "MahaToken",
+    "address": "0xEB9A348eF53B2c60654FF901A4A0e84E4d8c9b30"
+  },
+  "VotingEscrow": {
+    "abi": "VotingEscrow",
+    "address": "0xCa7C0735367D73C55347F332D8211B37D478FeE6"
+  }
+}
