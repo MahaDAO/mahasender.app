@@ -1,17 +1,17 @@
-import React from 'react';
-import styled from "styled-components";
+import React from 'react'
+import styled from 'styled-components'
 
 export interface TextWrapperProps {
-  fontFamily?: 'Inter' | 'Syne';
-  fontStyle?: string;
-  fontWeight?: 'bold' | 300 | 600,
-  fontSize?: 32 | 24 | 18 | 16 | 14 | 12;
-  FletterSpacing?: string;
-  lineHeight?: string;
-  Fcolor?: string;
-  text: string;
-  align?: 'left' | 'center' | 'right';
-  className?: string;
+  fontFamily?: 'Inter' | 'Syne' | 'Archivo'
+  fontStyle?: string
+  fontWeight?: 'normal' | 'bold' | 100 | 300 | 400 | 600
+  fontSize?: 42 | 32 | 24 | 18 | 16 | 14 | 12
+  FletterSpacing?: string
+  lineHeight?: string
+  Fcolor?: string
+  text: string
+  align?: 'left' | 'center' | 'right'
+  className?: string
 }
 
 const TextWrapper = (props: TextWrapperProps) => {
@@ -24,10 +24,9 @@ const TextWrapper = (props: TextWrapperProps) => {
     lineHeight = 'normal',
     Fcolor = '#FFFFFF',
     text = '',
-    className = "",
-    align = "left",
-
-  } = props;
+    className = '',
+    align = 'left',
+  } = props
 
   return (
     <StyledText
@@ -37,7 +36,6 @@ const TextWrapper = (props: TextWrapperProps) => {
       fontStyle={fontStyle}
       letterSpacing={FletterSpacing}
       lineHeight={lineHeight}
-
       fcolor={Fcolor}
       style={{ color: Fcolor }}
       className={className}
@@ -48,17 +46,17 @@ const TextWrapper = (props: TextWrapperProps) => {
   )
 }
 
-export default TextWrapper;
+export default TextWrapper
 
 interface StyledTextProps {
-  fontFamily: 'Inter' | 'Syne';
-  fontStyle: string;
-  fontWeight: 'bold' | 300 | 600,
-  fontSize: 32 | 24 | 18 | 16 | 14 | 12;
-  letterSpacing: string;
-  lineHeight: string;
-  align: 'left' | 'center' | 'right';
-  fcolor: string;
+  fontFamily: 'Inter' | 'Syne' | 'Archivo'
+  fontStyle: string
+  fontWeight: 'normal' | 'bold' | 100 | 300 | 400 | 600
+  fontSize: 42 | 32 | 24 | 18 | 16 | 14 | 12
+  letterSpacing: string
+  lineHeight: string
+  align: 'left' | 'center' | 'right'
+  fcolor: string
 }
 
 const StyledText = styled.p<StyledTextProps>`
@@ -67,6 +65,6 @@ const StyledText = styled.p<StyledTextProps>`
   font-weight: ${(props) => props.fontWeight};
   font-size: ${(props) => props.fontSize}px;
   letter-spacing: ${(props) => props.letterSpacing};
-  text-align:  ${(props) => props.align};
+  text-align: ${(props) => props.align};
   line-height: ${(props) => props.lineHeight};
-`;
+`

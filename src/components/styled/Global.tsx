@@ -10,7 +10,8 @@ const GlobalStyles = createGlobalStyle`
     padding: 0;
     margin: 0;
     color: #fff;
-    background-color: #262524;
+    background-color: #151414;
+    font-family: 'Archivo', sans-serif;
   }
 
   .container{
@@ -70,12 +71,36 @@ const GlobalStyles = createGlobalStyle`
 
   /* margins */
 
+  .margin0{
+    margin: 0;
+  }
+
   .margin0auto {
-    margin: 0 auto;
+    margin: 0 auto !important;
+  }
+
+  .marginB6{
+    margin-bottom: 6px;
+  }
+
+  .marginB8{
+    margin-bottom: 8px;
   }
 
   .marginB20{
     margin-bottom: 20px;
+  }
+
+  .marginB24{
+    margin-bottom: 24px;
+  }
+
+  .marginB42{
+    margin-bottom: 42px;
+  }
+
+  .marginR12{
+    margin-right: 12px;
   }
 
   .marginR20{
@@ -112,6 +137,10 @@ const GlobalStyles = createGlobalStyle`
     flex-direction: row !important;
   }
 
+  .flex_column{
+    flex-direction: column;
+  }
+
   .flex_row_center_start{
     display: flex;
     flex-direction: row;
@@ -134,13 +163,16 @@ const GlobalStyles = createGlobalStyle`
     width: 100% !important;;
   }
 
+  .editable{
+    height: 200px;
+    border: 1px solid black;
+  }
+
   @media only screen and (max-width: 768px){
     .container{
       padding: 15px;
    }
   }
-
-
 
 `
 

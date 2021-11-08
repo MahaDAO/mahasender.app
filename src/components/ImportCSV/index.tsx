@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import * as XLSX from 'xlsx'
 
-import UploadIcon from '../../assets/icons/Upload.svg'
+// import UploadIcon from '../../assets/icons/Upload.svg'
 import { UploadingModal } from './modal/UploadingModal'
 import CustomSuccessModal from '../CustomSuccessModal'
 
@@ -74,12 +74,12 @@ const ImportCSV = (props: Iprops) => {
         ) : (
           <div>
             Upload file
-            <img
+            {/* <img
               src={UploadIcon}
               alt={'download'}
               height={18}
               className="marginL04 "
-            />
+            /> */}
           </div>
         )}
         <input
