@@ -30,76 +30,6 @@ import Approve from './2Approve'
 import Confirm from './3Confirm'
 import Send from './4Send'
 
-const ColorlibConnector = withStyles({
-  alternativeLabel: {
-    top: 22,
-  },
-  active: {
-    '& $line': {
-      backgroundImage:
-        'linear-gradient(18.44deg, #F47F57 5.81%, #b63b3b 97.57%)',
-    },
-  },
-  completed: {
-    '& $line': {
-      backgroundImage:
-        'linear-gradient(18.44deg, #F47F57 5.81%, #b63b3b 97.57%)',
-    },
-  },
-  line: {
-    height: 3,
-    border: 0,
-    backgroundColor: '#c9c9ce',
-    borderRadius: 1,
-  },
-})(StepConnector)
-
-const useColorlibStepIconStyles = makeStyles({
-  root: {
-    backgroundColor: '#9c9a9a',
-    zIndex: 1,
-    color: '#fff',
-    width: 50,
-    height: 50,
-    display: 'flex',
-    borderRadius: '50%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  active: {
-    backgroundImage:
-      'linear-gradient(38.44deg, #F47F57 15.81%, #FD5656 87.57%)',
-    boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
-  },
-  completed: {
-    backgroundImage:
-      'linear-gradient(38.44deg, #F47F57 15.81%, #FD5656 87.57%)',
-  },
-})
-
-function ColorlibStepIcon(props: StepIconProps) {
-  const classes = useColorlibStepIconStyles()
-  const { active, completed } = props
-
-  const icons: { [index: string]: React.ReactElement } = {
-    1: <ExtensionIcon />,
-    2: <CheckCircleIcon />,
-    3: <ThumbUpIcon />,
-    4: <SendIcon />,
-  }
-
-  return (
-    <div
-      className={clsx(classes.root, {
-        [classes.active]: active,
-        [classes.completed]: completed,
-      })}
-    >
-      {icons[String(props.icon)]}
-    </div>
-  )
-}
-
 function getSteps() {
   return ['Prepare', 'Approve', 'Confirm', 'Send']
 }
@@ -276,10 +206,6 @@ export default function Home() {
     </div>
   )
 }
-
-const StpperContent = styled.div`
-  padding: 24px 50px;
-`
 
 const HeadingContainer = styled.div`
   margin: 100px 290px 124px 290px;
