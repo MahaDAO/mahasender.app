@@ -44,7 +44,23 @@ const GlobalStyles = createGlobalStyle`
   .white_text {
     color: #fff !important;
   }
-  
+
+  .orange_text{
+    color:  #FF7F57 !important;
+  }
+
+  .rgb256_064_text{
+    color: rgba(255, 255, 255, 0.64) !important;
+  }
+
+  .orange_bg{
+    background-color:  #FF7F57 !important;
+  }
+
+  .rgb256_008_bg{
+    background-color: rgba(255, 255, 255, 0.08) !important;
+  }
+
   .btn_outlined{
     padding: 10px 15px;
     background: linear-gradient(38.44deg, #F47F57 15.81%, #FD5656 87.57%);
@@ -75,8 +91,13 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
   }
 
+
   .margin0auto {
     margin: 0 auto !important;
+  }
+
+  .marginT24{
+    margin-top: 24px;
   }
 
   .marginB6{
@@ -85,6 +106,10 @@ const GlobalStyles = createGlobalStyle`
 
   .marginB8{
     margin-bottom: 8px;
+  }
+
+  .marginB12{
+    margin-bottom: 12px;
   }
 
   .marginB20{
@@ -97,6 +122,18 @@ const GlobalStyles = createGlobalStyle`
 
   .marginB42{
     margin-bottom: 42px;
+  }
+
+  .marginB64{
+    margin-bottom: 64px;
+  }
+
+  .marginB220{
+    margin-bottom: 220px;
+  }
+
+  .marginR4{
+    margin-right: 4px;
   }
 
   .marginR12{
@@ -113,9 +150,17 @@ const GlobalStyles = createGlobalStyle`
     padding: 20px;
   }
 
+  .line_spacing008em{
+    letter-spacing: 0.08em;
+  }
+
   .flex1Padding20{
     flex: 1;
     padding: 20px;
+  }
+
+  .flex1{
+    flex: 1;
   }
 
   /* flex */
