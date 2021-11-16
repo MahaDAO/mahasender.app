@@ -1,19 +1,22 @@
 import React, { useState } from 'react'
 import * as XLSX from 'xlsx'
+import styled from 'styled-components'
 
-// import UploadIcon from '../../assets/icons/Upload.svg'
 import { UploadingModal } from './modal/UploadingModal'
 import CustomSuccessModal from '../CustomSuccessModal'
+import TextWrapper from '../../components/TextWrapper'
+import UploadIcon from '../../assets/icons/misc/UploadIcon.svg'
 
 interface Iprops {
   // type: 'investors'
-  onError?: () => void
-  errorData?: (data: any) => void
+  // onError?: () => void
+  // errorData?: (data: any) => void
+  listOfAddresses?: (items: any) => void
   content?: any
 }
 
 const ImportCSV = (props: Iprops) => {
-  const { onError, errorData, content } = props
+  const { content, listOfAddresses } = props
 
   const [selectedFile, setSelectedFile] = useState<any>(null)
   const [uploadFileModal, setUploadFileModal] = useState<boolean>(false)
@@ -45,8 +48,17 @@ const ImportCSV = (props: Iprops) => {
 
       /* Convert array to json*/
       const dataParse = await XLSX.utils.sheet_to_json(ws, { header: 1 })
-      setUploadedAdrs(dataParse)
+      const textData = await XLSX.utils.sheet_to_txt(ws)
+
+      let list = await dataParse.map((item: any) => {
+        item.toString()
+      })
+
+      console.log('list', list)
+
       console.log('dataParse', dataParse)
+      // console.log('textData', textData)
+      // listOfAddresses(list)
     }
 
     setSelectedFile(formData)
@@ -55,8 +67,6 @@ const ImportCSV = (props: Iprops) => {
       reader.readAsBinaryString(formData)
     }, 1000)
   }
-
-  console.log('uploadedAdrs', uploadedAdrs)
 
   const sendCsv = () => {
     const formData = new FormData()
@@ -72,15 +82,13 @@ const ImportCSV = (props: Iprops) => {
         {content ? (
           content()
         ) : (
-          <div>
-            Upload file
-            {/* <img
-              src={UploadIcon}
-              alt={'download'}
-              height={18}
-              className="marginL04 "
-            /> */}
-          </div>
+          <Dropfile className="text_center">
+            <img src={UploadIcon} alt={'UploadIcon'} />
+            <TextWrapper
+              text={'drag and drop file here or click to upload'}
+              align={'center'}
+            />
+          </Dropfile>
         )}
         <input
           type="file"
@@ -123,3 +131,11 @@ const ImportCSV = (props: Iprops) => {
 }
 
 export default ImportCSV
+
+const Dropfile = styled.div`
+  padding: 20px;
+  background-color: #151414;
+  color: #fff;
+  text-align: center;
+  margin: 0 auto;
+`

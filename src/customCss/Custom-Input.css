@@ -1,0 +1,27 @@
+.MuiInputBase-root {
+	background-color: #151414 !important;
+	font-weight: 300 !important;
+	font-size: 14px !important;
+	line-height: 140% !important;
+	color: rgba(255, 255, 255, 0.64) !important;
+	font-family: 'Inter' !important;
+}
+
+.MuiAutocomplete-paper {
+	background-color: #1f1e1e !important;
+	font-family: 'Inter' !important;
+	font-style: normal !important;
+	font-weight: 300 !important;
+	font-size: 14px !important;
+	line-height: 140% !important;
+	color: rgba(255, 255, 255, 0.64) !important;
+}
+
+.MuiTextField-root {
+	outline: none !important;
+	border: none !important;
+}
+
+.MuiIconButton-root {
+	color: rgba(255, 255, 255, 0.64) !important;
+}

@@ -100,6 +100,14 @@ const GlobalStyles = createGlobalStyle`
     margin-top: 24px;
   }
 
+  .marginTB2{
+    margin: 2px 0;
+  }
+
+  .marginB4{
+    margin-bottom: 4px;
+  }
+
   .marginB6{
     margin-bottom: 6px;
   }
@@ -211,6 +219,28 @@ const GlobalStyles = createGlobalStyle`
   .editable{
     height: 200px;
     border: 1px solid black;
+  }
+
+  textarea{
+    background-color: #151414;
+    color: #fff;
+    padding: 0;
+    line-height: 157%;
+    box-sizing: border-box;
+    border: none;
+    margin: 0;
+    font-size: 14px;
+    font-family: 'Inter';
+    font-weight: 300;
+    line-height: '140%';
+    color: rgba(255, 255, 255, 0.64);
+    width: 100%;
+    resize: none;
+  }
+
+  textarea:focus{
+    box-shadow: none !important;
+    outline: none;
   }
 
   @media only screen and (max-width: 768px){

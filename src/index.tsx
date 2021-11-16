@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import GlobalStyles from './components/styled/Global'
+import './customCss/Custom-Input.css'
+import './customCss/Custom-Modals.css'
 
 ReactDOM.render(
   <React.StrictMode>
