@@ -26,9 +26,8 @@ import Send from './views/Home/4Send'
 const Providers: React.FC = ({ children }) => {
   return (
     <UseWalletProvider
-      // chainId={config.chainId}
-      // connectors={{ injected: {} }}
-      connectors={{ injected: { chainId: [97] } }}
+      connectors={{ injected: {} }}
+      // connectors={{ injected: { chainId: [4] } }}
     >
       {children}
     </UseWalletProvider>

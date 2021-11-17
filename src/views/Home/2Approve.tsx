@@ -4,6 +4,8 @@ import FormControl from '@material-ui/core/FormControl'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import { NumberFormat } from 'xlsx'
+import { useWallet } from 'use-wallet'
 
 import TextWrapper from '../../components/TextWrapper'
 import SummaryRow from './components/SummaryRow'
@@ -11,14 +13,31 @@ import Button from '../../components/Button'
 import ErrorIcon from '../../assets/icons/infoTip/Error.svg'
 
 interface ApproveProps {
-  handleNext: () => void
+  handleNext: (adrs?: []) => void
   handleBack: () => void
+  noOfAdrs?: number
+  noOfTxns?: number
+  noOfTokens?: number
+  inSufficinetBal?: boolean
+  ethBalance?: string
 }
 
 export default function Approve(props: ApproveProps) {
-  const { handleNext, handleBack } = props
+  const {
+    handleNext,
+    handleBack,
+    noOfAdrs = 0,
+    noOfTxns = 0,
+    noOfTokens = 0,
+    inSufficinetBal = false,
+    ethBalance,
+  } = props
+
+  const { balance } = useWallet()
 
   const [amountRadio, setAmountRadio] = useState<string>('exactAmt')
+
+  // let noOfTxns = Math.ceil(noOfAdrs / 5)
 
   const handleAmountRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmountRadio((event.target as HTMLInputElement).value)
@@ -34,28 +53,31 @@ export default function Approve(props: ApproveProps) {
         Fcolor={'rgba(255, 255, 255, 0.88)'}
         className={'margin0 marginB12'}
       />
-      <SummaryRow field={'Total number of addresses'} amount={'1'} />
+      <SummaryRow field={'Total number of addresses'} amount={`${noOfAdrs}`} />
       <SummaryRow
         field={'Total number of tokens to be sent'}
-        amount={'300'}
-        unit={'MATIC'}
+        amount={`${noOfTokens}`}
+        unit={'MAHA'}
       />
-      <SummaryRow field={'Total number of transactions needed'} amount={'0'} />
+      <SummaryRow
+        field={'Total number of transactions needed'}
+        amount={`${noOfTxns}`}
+      />
       <SummaryRow
         field={'Your token balance'}
-        amount={'0.0100 0 '}
-        unit={'MATIC'}
+        amount={`${ethBalance}`}
+        unit={'MAHA'}
       />
-      <SummaryRow
+      {/* <SummaryRow
         field={'Approximate cost of operation '}
         amount={'0'}
-        unit={'MATIC'}
+        unit={'MAHA'}
       />
       <SummaryRow
-        field={'Your MATIC balance '}
+        field={'Your MAHA balance '}
         amount={'0.0100'}
-        unit={'MATIC'}
-      />
+        unit={'MAHA'}
+      /> */}
       <div className={'divider marginT24 marginB24'}></div>
       <TextWrapper
         text={'Amount to approve'}
@@ -86,21 +108,22 @@ export default function Approve(props: ApproveProps) {
           />
         </RadioGroup>
       </FormControl>
-      <ErrorAlert>
-        <img src={ErrorIcon} alt={'ErrorIcon'} className={'marginR12'} />
-        <div>
-          <TextWrapper
-            text={
-              'Insufficient MATIC balance, please make sure your balance is at least 50 MATIC'
-            }
-            fontWeight={300}
-            fontSize={12}
-            lineHeight={'130%'}
-            Fcolor={'#FA4C69'}
-            className={'margin0'}
-          />
-        </div>
-      </ErrorAlert>
+      {inSufficinetBal ? (
+        <ErrorAlert>
+          <img src={ErrorIcon} alt={'ErrorIcon'} className={'marginR12'} />
+          <div>
+            <TextWrapper
+              text={`Insufficient MAHA balance`}
+              fontWeight={300}
+              fontSize={12}
+              lineHeight={'130%'}
+              Fcolor={'#FA4C69'}
+              className={'margin0'}
+            />
+          </div>
+        </ErrorAlert>
+      ) : null}
+
       <div className={'flex_row'}>
         <div className={'marginR20 flex1'}>
           <Button

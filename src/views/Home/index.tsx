@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { ethers } from 'ethers'
 import styled from 'styled-components'
 import {
   makeStyles,
@@ -29,24 +30,56 @@ import Prepare from './1Prepare'
 import Approve from './2Approve'
 import Confirm from './3Confirm'
 import Send from './4Send'
+import { useWallet } from 'use-wallet'
 
 function getSteps() {
   return ['Prepare', 'Approve', 'Confirm', 'Send']
 }
 
 export default function Home() {
+  const { balance } = useWallet()
+  const ethBalance = ethers.utils.formatEther(balance)
+
   const [activeStep, setActiveStep] = React.useState(0)
   const [amountRadio, setAmountRadio] = useState<string>('0')
+  const [noOfAdrs, setNoOfAdrs] = useState<number>(0)
+  const [noOfTokens, setNoOfTokens] = useState<number>(0)
+  const [noOfTxns, setNoOfTxns] = useState<number>(0)
+  const [inSufficinetBal, setInsufficintBal] = useState<boolean>(false)
+
+  console.log('ethBalance', ethBalance)
+
   const steps = getSteps()
+
+  useEffect(() => {
+    if (noOfTokens > 0 && noOfTokens > Number(ethBalance)) {
+      setInsufficintBal(true)
+      console.log('inside if')
+    }
+  }, [noOfTokens])
 
   const handleAmountRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmountRadio((event.target as HTMLInputElement).value)
   }
 
-  const handleNext = () => {
+  const handleNext = (adrs?: []) => {
+    if (adrs) {
+      setNoOfAdrs(adrs.length)
+      setNoOfTxns(Math.ceil(adrs.length / 5))
+
+      let totalOfTokens = 0
+      adrs.forEach((item: any) => {
+        totalOfTokens += Number(item.value)
+      })
+
+      setNoOfTokens(totalOfTokens)
+    }
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
     setTimeout(() => setAmountRadio(`${activeStep + 1}`), 200)
   }
+
+  console.log('inSufficinetBal', noOfTokens, ethBalance, inSufficinetBal)
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
@@ -62,9 +95,25 @@ export default function Home() {
       case 0:
         return <Prepare handleNext={handleNext} />
       case 1:
-        return <Approve handleNext={handleNext} handleBack={handleBack} />
+        return (
+          <Approve
+            handleNext={handleNext}
+            noOfAdrs={noOfAdrs}
+            noOfTxns={noOfTxns}
+            handleBack={handleBack}
+            noOfTokens={noOfTokens}
+            inSufficinetBal={inSufficinetBal}
+            ethBalance={ethBalance}
+          />
+        )
       case 2:
-        return <Confirm handleNext={handleNext} handleBack={handleBack} />
+        return (
+          <Confirm
+            handleNext={handleNext}
+            handleBack={handleBack}
+            ethBalance={ethBalance}
+          />
+        )
       case 3:
         return <Send handleBack={handleBack} />
       default:

@@ -3,12 +3,13 @@ import SummaryRow from './components/SummaryRow'
 import Button from '../../components/Button'
 
 interface ConfirmProps {
-  handleNext: () => void
+  handleNext: (adrs?: []) => void
   handleBack: () => void
+  ethBalance?: string
 }
 
 export default function Confirm(props: ConfirmProps) {
-  const { handleNext, handleBack } = props
+  const { handleNext, handleBack, ethBalance } = props
 
   return (
     <section>

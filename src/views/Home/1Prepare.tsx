@@ -16,7 +16,7 @@ import Button from '../../components/Button'
 import ImportCSV from '../../components/ImportCSV'
 
 interface PrepareProps {
-  handleNext: () => void
+  handleNext: (adrs: []) => void
 }
 
 function Prepare(props: PrepareProps) {
@@ -42,6 +42,8 @@ function Prepare(props: PrepareProps) {
   )
   const [inputTokenValue, setInputTokenValue] = useState('')
   const [outsideTextarea, setOutsideTextarea] = useState(false)
+  const [lineNumbers, setLineNumbers] = useState<number[]>([1])
+
   const textAreaRef = useRef()
 
   let fromToken = '0xb4d930279552397bba2ee473229f89ec245bc365'
@@ -76,18 +78,19 @@ function Prepare(props: PrepareProps) {
     let addresses: any[]
     addresses = []
 
-    enteredAdrs.split(/\n/g).map((adrs: string, i: number) => {
-      let indexOfComma = adrs.indexOf(',')
-      let valueTobeSent = adrs.slice(indexOfComma + 1, adrs.length)
+    if (enteredAdrs.length > 0) {
+      enteredAdrs.split(/\n/g).map((adrs: string, i: number) => {
+        let indexOfComma = adrs.indexOf(',')
+        let valueTobeSent = adrs.slice(indexOfComma + 1, adrs.length)
 
-      addresses?.push({
-        line: i + 1,
-        adrs: `${adrs.slice(0, indexOfComma)}`,
-        value: `${valueTobeSent}`,
+        addresses?.push({
+          line: i + 1,
+          adrs: `${adrs.slice(0, indexOfComma)}`,
+          value: `${valueTobeSent}`,
+        })
       })
-    })
-
-    setListOfAddresses(addresses)
+      setListOfAddresses(addresses)
+    }
   }
 
   const handleCSVData = (data: any) => {
@@ -118,7 +121,7 @@ function Prepare(props: PrepareProps) {
             error: `${item.adrs} is invalid address`,
           },
         ])
-      if (item.value <= 0)
+      if (item.value <= 0 || isNaN(item.value))
         setAddressError((prevArray: any) => [
           ...prevArray,
           {
@@ -148,6 +151,12 @@ function Prepare(props: PrepareProps) {
       })
     })
     setAddressError([])
+  }
+
+  const handleKeyDown = (event: any) => {
+    if (event.key === 'Enter') {
+      setLineNumbers([...lineNumbers, Number(lineNumbers.length + 1)])
+    }
   }
 
   console.log('enteredAdrs', enteredAdrs)
@@ -236,10 +245,10 @@ function Prepare(props: PrepareProps) {
         ) : (
           <div style={{ display: 'flex' }}>
             <div style={{ marginRight: '10px' }}>
-              {listOfAddresses.map((item: any, i: number) => (
+              {lineNumbers.map((item: any, i: number) => (
                 <TextWrapper
                   key={i}
-                  text={`${i + 1}`}
+                  text={`${item}`}
                   fontFamily={'Inter'}
                   fontWeight={300}
                   fontSize={14}
@@ -256,6 +265,7 @@ function Prepare(props: PrepareProps) {
                 setEnteredAdrs(e.target.value)
               }}
               onBlur={handleManualData}
+              onKeyDown={handleKeyDown}
             />
           </div>
         )}
@@ -282,8 +292,8 @@ function Prepare(props: PrepareProps) {
 
       <Button
         text={'Next'}
-        onClick={() => handleNext()}
-        disabled={disableNextBtn}
+        onClick={() => handleNext(listOfAddresses)}
+        // disabled={disableNextBtn}
       />
     </section>
   )

@@ -18,6 +18,7 @@ export class Protocol {
   provider: ethers.providers.BaseProvider;
 
   MAHA: ERC20;
+  MAHA2: ERC20;
 
   tokens: {
     [name: string]: ERC20;
@@ -34,9 +35,11 @@ export class Protocol {
     }
 
     this.MAHA = new ERC20(deployments.MahaToken.address, provider, 'MAHA', 18);
-
+    this.MAHA2 = new ERC20(deployments.MahaToken.address, provider, 'MAHA2', 18);
+    
     this.tokens = {
-      MAHA: this.MAHA
+      MAHA: this.MAHA,
+      MAHA2: this.MAHA2
     };
 
     this.config = cfg;
