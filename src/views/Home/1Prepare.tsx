@@ -8,45 +8,43 @@ import { useDropzone } from 'react-dropzone'
 import { ethers } from 'ethers'
 import * as _ from 'underscore'
 import useStateWithCallback from 'use-state-with-callback'
+import useCore from '../../hooks/useCore'
 
 import TextWrapper from '../../components/TextWrapper'
 import SelectOption from '../../components/SelectOptiion'
 import UploadIcon from '../../assets/icons/misc/UploadIcon.svg'
 import Button from '../../components/Button'
 import ImportCSV from '../../components/ImportCSV'
-
+import AccountButton from '../../components/Navbar/components/AccountButton'
 interface PrepareProps {
   handleNext: (adrs: []) => void
+  selectedTokenFn: (token: any) => void
 }
 
 function Prepare(props: PrepareProps) {
-  const { handleNext } = props
+  const { handleNext, selectedTokenFn } = props
 
-  const topFilms = [
-    { title: 'Matic - Polygon mainnet native currency' },
-    { title: 'ETH - Ethereum mainnet native currency' },
-    { title: 'ARTH - 0xe52...4d590' },
-  ]
+  const core = useCore()
+
+  const listOfTokens = Object.keys(core.tokens).map((key) => {
+    return core.tokens[key]
+  })
 
   const InputOption = ['Upload File', 'Insert Manually']
 
-  const [toAddressText, setToAddressText] = useState<string>('Insert Manually')
-  const [decimalText, setDeciamText] = useState<string>('18')
   const [listOfAddresses, setListOfAddresses] = useState<any>([])
   const [enteredAdrs, setEnteredAdrs] = useState<any>('')
   const [addressError, setAddressError] = useState<any>([])
-  const [arrayOfNoOfLines, setArrayOfNoOfLines] = useState<number[]>()
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone()
-  const [selectedToken, setSelectedToken] = useState<string | null>(
+  const [addAdrsDropdown, setaddAdrsDropdown] = useState<string | null>(
     InputOption[0],
   )
   const [inputTokenValue, setInputTokenValue] = useState('')
-  const [outsideTextarea, setOutsideTextarea] = useState(false)
   const [lineNumbers, setLineNumbers] = useState<number[]>([1])
+  const [selectedToken, setSelectedToken] = useState<any>()
+  const [showWarning, setShowWarning] = useState<boolean>(false)
 
-  const textAreaRef = useRef()
-
-  let fromToken = '0xb4d930279552397bba2ee473229f89ec245bc365'
+  // let fromToken = '0xb4d930279552397bba2ee473229f89ec245bc365'
 
   useEffect(() => {
     handleError()
@@ -55,24 +53,19 @@ function Prepare(props: PrepareProps) {
       return `${item.adrs}, ${item.value}`
     })
 
-    console.log('list', list)
-
     setEnteredAdrs(list.join('\n'))
   }, [listOfAddresses])
 
-  console.log('listOfAddresses', listOfAddresses)
-  console.log('addressError', addressError)
+  useEffect(() => {
+    selectedTokenFn(selectedToken)
+  }, [selectedToken])
 
   const disableNextBtn =
-    ethers.utils.isAddress(fromToken) &&
-    addressError.length === 0 &&
-    listOfAddresses.length !== 0
+    ethers.utils.isAddress(selectedToken?.address) &&
+    addressError?.length === 0 &&
+    listOfAddresses?.length !== 0
 
-  let duplicates: any[]
-  duplicates = []
-
-  let duplicatesParents: any[]
-  duplicatesParents = []
+  console.log('disableNextBtn', disableNextBtn)
 
   const handleManualData = () => {
     let addresses: any[]
@@ -94,7 +87,6 @@ function Prepare(props: PrepareProps) {
   }
 
   const handleCSVData = (data: any) => {
-    console.log('data', data)
     let addresses: any[]
     addresses = []
     data?.map((item: any, i: number) => {
@@ -159,7 +151,8 @@ function Prepare(props: PrepareProps) {
     }
   }
 
-  console.log('enteredAdrs', enteredAdrs)
+  console.log('listOfAddresses', listOfAddresses)
+  console.log('selectedToken', selectedToken)
 
   return (
     <section>
@@ -171,9 +164,14 @@ function Prepare(props: PrepareProps) {
         <div style={{ flex: 9, marginRight: '32px' }}>
           <Autocomplete
             id="combo-box-demo"
-            options={topFilms}
-            getOptionLabel={(option: any) => option.title}
+            options={listOfTokens}
+            getOptionLabel={(option: any) => `${option.address}`}
+            getOptionSelected={(option, value) =>
+              option.address === value.address
+            }
             style={{ width: '100%', color: '#fff' }}
+            value={selectedToken}
+            onChange={(e, token) => setSelectedToken(token)}
             renderInput={(params: any) => (
               <TextField
                 {...params}
@@ -194,10 +192,10 @@ function Prepare(props: PrepareProps) {
           >
             <OutlinedInput
               id="outlined-adornment-weight"
-              value={decimalText}
-              onChange={(e) => {
-                setDeciamText(e.target.value)
-              }}
+              value={selectedToken?.decimal || 0}
+              // onChange={(e) => {
+              //   setDeciamText(e.target.value)
+              // }}
               aria-describedby="outlined-weight-helper-text"
               inputProps={{
                 'aria-label': 'weight',
@@ -214,9 +212,9 @@ function Prepare(props: PrepareProps) {
           <Autocomplete
             id="combo-box-demo"
             options={InputOption}
-            value={selectedToken}
+            value={addAdrsDropdown}
             onChange={(event: any, newValue: string | null) => {
-              setSelectedToken(newValue)
+              setaddAdrsDropdown(newValue)
             }}
             inputValue={inputTokenValue}
             onInputChange={(event, newInputValue) => {
@@ -238,7 +236,7 @@ function Prepare(props: PrepareProps) {
       </div>
 
       <UploadFileContainer>
-        {selectedToken === 'Upload File' ? (
+        {addAdrsDropdown === 'Upload File' ? (
           <div>
             <ImportCSV />
           </div>
@@ -290,10 +288,12 @@ function Prepare(props: PrepareProps) {
         </section>
       ) : null}
 
+      {/* <AccountButton showWarning={showWarning} /> */}
+
       <Button
         text={'Next'}
         onClick={() => handleNext(listOfAddresses)}
-        // disabled={disableNextBtn}
+        disabled={!disableNextBtn}
       />
     </section>
   )

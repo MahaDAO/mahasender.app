@@ -1,10 +1,11 @@
-import { useContext } from 'react';
+import { useContext } from "react"
 
-import { Context } from '../context/Provider';
+import { Context } from "../context/Provider"
 
 const useCore = () => {
-  const { core } = useContext(Context);
-  return core;
-};
+	const { core } = useContext(Context)
 
-export default useCore;
+	return core
+}
+
+export default useCore

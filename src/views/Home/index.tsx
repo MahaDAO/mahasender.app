@@ -42,21 +42,27 @@ export default function Home() {
 
   const [activeStep, setActiveStep] = React.useState(0)
   const [amountRadio, setAmountRadio] = useState<string>('0')
-  const [noOfAdrs, setNoOfAdrs] = useState<number>(0)
-  const [noOfTokens, setNoOfTokens] = useState<number>(0)
-  const [noOfTxns, setNoOfTxns] = useState<number>(0)
-  const [inSufficinetBal, setInsufficintBal] = useState<boolean>(false)
-
-  console.log('ethBalance', ethBalance)
+  const [textAreaFields, setTextAreaFields] = useState<any>({
+    noOfAdrs: 0,
+    noOfTokens: 0,
+    noOfTxns: 0,
+    inSufficinetBal: false,
+    selectedToken: {},
+  })
+  const [amountToApprove, setAmountToApprove] = useState<number>(0)
 
   const steps = getSteps()
 
+  console.log('textAreaFields', textAreaFields)
+
   useEffect(() => {
-    if (noOfTokens > 0 && noOfTokens > Number(ethBalance)) {
-      setInsufficintBal(true)
-      console.log('inside if')
+    if (
+      textAreaFields.noOfTokens > 0 &&
+      textAreaFields.noOfTokens > Number(ethBalance)
+    ) {
+      setTextAreaFields({ ...textAreaFields, inSufficinetBal: true })
     }
-  }, [noOfTokens])
+  }, [textAreaFields.noOfTokens])
 
   const handleAmountRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmountRadio((event.target as HTMLInputElement).value)
@@ -64,22 +70,22 @@ export default function Home() {
 
   const handleNext = (adrs?: []) => {
     if (adrs) {
-      setNoOfAdrs(adrs.length)
-      setNoOfTxns(Math.ceil(adrs.length / 5))
-
       let totalOfTokens = 0
       adrs.forEach((item: any) => {
         totalOfTokens += Number(item.value)
       })
 
-      setNoOfTokens(totalOfTokens)
+      setTextAreaFields({
+        ...textAreaFields,
+        noOfAdrs: adrs.length,
+        noOfTxns: Math.ceil(adrs.length / 5),
+        noOfTokens: totalOfTokens,
+      })
     }
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
     setTimeout(() => setAmountRadio(`${activeStep + 1}`), 200)
   }
-
-  console.log('inSufficinetBal', noOfTokens, ethBalance, inSufficinetBal)
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
@@ -93,27 +99,25 @@ export default function Home() {
   function getStepContent(step: number) {
     switch (step) {
       case 0:
-        return <Prepare handleNext={handleNext} />
+        return (
+          <Prepare
+            handleNext={handleNext}
+            selectedTokenFn={(token: any) =>
+              setTextAreaFields({ ...textAreaFields, selectedToken: token })
+            }
+          />
+        )
       case 1:
         return (
           <Approve
             handleNext={handleNext}
-            noOfAdrs={noOfAdrs}
-            noOfTxns={noOfTxns}
+            textAreaFields={textAreaFields}
             handleBack={handleBack}
-            noOfTokens={noOfTokens}
-            inSufficinetBal={inSufficinetBal}
-            ethBalance={ethBalance}
+            amountToApproveFn={(val: number) => setAmountToApprove(val)}
           />
         )
       case 2:
-        return (
-          <Confirm
-            handleNext={handleNext}
-            handleBack={handleBack}
-            ethBalance={ethBalance}
-          />
-        )
+        return <Confirm handleNext={handleNext} handleBack={handleBack} />
       case 3:
         return <Send handleBack={handleBack} />
       default:

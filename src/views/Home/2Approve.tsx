@@ -6,42 +6,44 @@ import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import { NumberFormat } from 'xlsx'
 import { useWallet } from 'use-wallet'
+import { ethers } from 'ethers'
 
 import TextWrapper from '../../components/TextWrapper'
 import SummaryRow from './components/SummaryRow'
 import Button from '../../components/Button'
 import ErrorIcon from '../../assets/icons/infoTip/Error.svg'
+import useTokenBalance from '../../hooks/useTokenBalance'
+import useCore from '../../hooks/useCore'
 
 interface ApproveProps {
   handleNext: (adrs?: []) => void
   handleBack: () => void
-  noOfAdrs?: number
-  noOfTxns?: number
-  noOfTokens?: number
-  inSufficinetBal?: boolean
-  ethBalance?: string
+  amountToApproveFn: (val: any) => void
+  textAreaFields: any
 }
 
 export default function Approve(props: ApproveProps) {
-  const {
-    handleNext,
-    handleBack,
-    noOfAdrs = 0,
-    noOfTxns = 0,
-    noOfTokens = 0,
-    inSufficinetBal = false,
-    ethBalance,
-  } = props
+  const { handleNext, handleBack, amountToApproveFn, textAreaFields } = props
 
   const { balance } = useWallet()
+  const core = useCore()
+  const ethBalance = ethers.utils.formatEther(balance)
+
+  const mahaBalance = useTokenBalance(core.tokens['MAHA'])
 
   const [amountRadio, setAmountRadio] = useState<string>('exactAmt')
 
-  // let noOfTxns = Math.ceil(noOfAdrs / 5)
+  useEffect(() => {
+    if (amountRadio === 'exactAmt') amountToApproveFn(textAreaFields.noOfTokens)
+    else amountToApproveFn(10000)
+  }, [amountRadio])
 
   const handleAmountRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmountRadio((event.target as HTMLInputElement).value)
   }
+
+  console.log('ethBalance', ethBalance)
+  console.log('mahaBalance', mahaBalance)
 
   return (
     <section>
@@ -53,30 +55,33 @@ export default function Approve(props: ApproveProps) {
         Fcolor={'rgba(255, 255, 255, 0.88)'}
         className={'margin0 marginB12'}
       />
-      <SummaryRow field={'Total number of addresses'} amount={`${noOfAdrs}`} />
+      <SummaryRow
+        field={'Total number of addresses'}
+        amount={`${textAreaFields.noOfAdrs}`}
+      />
       <SummaryRow
         field={'Total number of tokens to be sent'}
-        amount={`${noOfTokens}`}
-        unit={'MAHA'}
+        amount={`${textAreaFields.noOfTokens}`}
+        unit={`${textAreaFields.selectedToken.symbol}`}
       />
       <SummaryRow
         field={'Total number of transactions needed'}
-        amount={`${noOfTxns}`}
+        amount={`${textAreaFields.noOfTxns}`}
       />
       <SummaryRow
         field={'Your token balance'}
         amount={`${ethBalance}`}
-        unit={'MAHA'}
+        unit={`${textAreaFields.selectedToken.symbol}`}
       />
       {/* <SummaryRow
         field={'Approximate cost of operation '}
         amount={'0'}
-        unit={'MAHA'}
+        unit={`${textAreaFields.selectedToken.symbol}`}
       />
       <SummaryRow
         field={'Your MAHA balance '}
         amount={'0.0100'}
-        unit={'MAHA'}
+        unit={`${textAreaFields.selectedToken.symbol}`}
       /> */}
       <div className={'divider marginT24 marginB24'}></div>
       <TextWrapper
@@ -108,7 +113,7 @@ export default function Approve(props: ApproveProps) {
           />
         </RadioGroup>
       </FormControl>
-      {inSufficinetBal ? (
+      {textAreaFields.inSufficinetBal ? (
         <ErrorAlert>
           <img src={ErrorIcon} alt={'ErrorIcon'} className={'marginR12'} />
           <div>

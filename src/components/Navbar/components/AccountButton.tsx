@@ -27,8 +27,8 @@ const AccountButton: React.FC<AccountButtonProps> = ({
 
   const wallet = useWallet()
 
-  console.log('wallet', wallet)
-  console.log('useWallet', account, balance, status)
+  // console.log('wallet', wallet)
+  // console.log('useWallet', account, balance, status)
 
   const switchMetamaskChain = () => {
     if (ethereum) {
