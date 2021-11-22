@@ -11,7 +11,7 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
     color: #fff;
     background-color: #151414;
-    font-family: 'Archivo', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
 
   .container{
@@ -47,10 +47,20 @@ const GlobalStyles = createGlobalStyle`
 
   .orange_text{
     color:  #FF7F57 !important;
+    font-family: 'Inter' !important;
+    font-style: normal !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    line-height: 20px !important;
   }
 
   .rgb256_064_text{
     color: rgba(255, 255, 255, 0.64) !important;
+    font-family: 'Inter' !important;
+    font-style: normal !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    line-height: 20px !important;
   }
 
   .orange_bg{

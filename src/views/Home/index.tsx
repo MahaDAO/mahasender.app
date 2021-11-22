@@ -117,13 +117,21 @@ export default function Home() {
           />
         )
       case 2:
-        return <Confirm handleNext={handleNext} handleBack={handleBack} />
+        return (
+          <Confirm
+            textAreaFields={textAreaFields}
+            handleNext={handleNext}
+            handleBack={handleBack}
+          />
+        )
       case 3:
         return <Send handleBack={handleBack} />
       default:
         return 'Unknown step'
     }
   }
+
+  console.log('activeStep', activeStep)
 
   return (
     <div>
@@ -218,6 +226,7 @@ export default function Home() {
                         className={`${
                           activeStep === 1 ? 'orange_text' : 'rgb256_064_text'
                         }`}
+                        disabled={activeStep === 0 || activeStep < 1}
                       />
                     }
                     label="Approve"
@@ -234,6 +243,7 @@ export default function Home() {
                       />
                     }
                     label="Confirm"
+                    disabled={activeStep === 1 || activeStep < 2}
                   />
                 </RadioContainer>
                 <RadioContainer>
@@ -247,6 +257,7 @@ export default function Home() {
                       />
                     }
                     label="Send"
+                    disabled={activeStep === 2 || activeStep < 3}
                   />
                 </RadioContainer>
               </RadioGroup>

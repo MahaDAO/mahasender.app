@@ -3,7 +3,9 @@ import styled from 'styled-components'
 
 import TextWrapper from '../../components/TextWrapper'
 import Button from '../../components/Button'
-
+import WhiteSquare from '../../assets/icons/checkbox/WhiteSquare.svg'
+import Cross from '../../assets/icons/misc/Cross.svg'
+import GreenOutline from '../../assets/icons/checkbox/GreenOutline.svg'
 interface SendProps {
   handleBack: () => void
 }
@@ -12,22 +14,31 @@ export default function Send(props: SendProps) {
   const { handleBack } = props
 
   const [txConfirmed, setTxConfirmed] = useState<boolean>(true)
+  const [txMined, setTxMined] = useState(false)
+
   return (
     <section>
-      <SuccessAlert>
-        <div className={'marginR12'}>i</div>
-        <div style={{ flex: 1 }}>
-          <TextWrapper
-            text={
-              'Congratulations! your transactions were sent out successfully.'
-            }
-            fontSize={16}
-            lineHeight={'150%'}
-            className={'margin0'}
-          />
-        </div>
-        <div>i</div>
-      </SuccessAlert>
+      {txMined ? (
+        <SuccessAlert>
+          <div className={'marginR12'}>
+            <img src={WhiteSquare} alt={'WhiteSquare'} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <TextWrapper
+              text={
+                'Congratulations! your transactions were sent out successfully.'
+              }
+              fontSize={16}
+              lineHeight={'150%'}
+              className={'margin0'}
+            />
+          </div>
+          <div onClick={() => setTxMined(false)} className={'pointer'}>
+            <img src={Cross} alt={'Cross'} />
+          </div>
+        </SuccessAlert>
+      ) : null}
+
       {!txConfirmed ? (
         <TextWrapper
           text={'Please confirm the transaction in metamask.'}
@@ -61,13 +72,14 @@ export default function Send(props: SendProps) {
               />
             </div>
             <div>
-              <TextWrapper
+              <img src={GreenOutline} alt={'GreenCheck'} />
+              {/* <TextWrapper
                 text={'loader'}
                 fontWeight={300}
                 fontSize={14}
                 lineHeight={'130%'}
                 className={'margin0'}
-              />
+              /> */}
             </div>
           </TxnHashDiv>
           <TxnHashDiv style={{ marginBottom: '40px' }}>

@@ -42,6 +42,8 @@ export default function Approve(props: ApproveProps) {
     setAmountRadio((event.target as HTMLInputElement).value)
   }
 
+  const disableNextBtn = !textAreaFields.inSufficinetBal
+
   console.log('ethBalance', ethBalance)
   console.log('mahaBalance', mahaBalance)
 
@@ -102,13 +104,27 @@ export default function Approve(props: ApproveProps) {
         >
           <FormControlLabel
             value="exactAmt"
-            control={<Radio className={'orange_text'} />}
+            control={
+              <Radio
+                className={`${
+                  amountRadio === 'exactAmt' ? 'orange_text' : 'rgb256_064_text'
+                }`}
+              />
+            }
             label="Exact amount to be sent"
           />
 
           <FormControlLabel
             value="fullTokenBal"
-            control={<Radio className={'rgb256_064_text'} />}
+            control={
+              <Radio
+                className={`${
+                  amountRadio === 'fullTokenBal'
+                    ? 'orange_text'
+                    : 'rgb256_064_text'
+                }`}
+              />
+            }
             label="Your full token balance"
           />
         </RadioGroup>
@@ -145,6 +161,7 @@ export default function Approve(props: ApproveProps) {
             onClick={() => {
               handleNext()
             }}
+            disabled={!disableNextBtn}
           />
         </div>
       </div>
