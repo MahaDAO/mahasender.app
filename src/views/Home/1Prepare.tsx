@@ -3,9 +3,11 @@ import styled from 'styled-components'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
 import FormControl from '@material-ui/core/FormControl'
 import TextField from '@material-ui/core/TextField'
-import Autocomplete from '@material-ui/lab/Autocomplete'
+import Autocomplete, {
+  createFilterOptions,
+} from '@material-ui/lab/Autocomplete'
 import { useDropzone } from 'react-dropzone'
-import { ethers } from 'ethers'
+import { Contract, ethers } from 'ethers'
 import * as _ from 'underscore'
 import useStateWithCallback from 'use-state-with-callback'
 import useCore from '../../hooks/useCore'
@@ -16,48 +18,70 @@ import UploadIcon from '../../assets/icons/misc/UploadIcon.svg'
 import Button from '../../components/Button'
 import ImportCSV from '../../components/ImportCSV'
 import AccountButton from '../../components/Navbar/components/AccountButton'
+import ERC20 from '../../protocol/ERC20'
+import ABIS from '../../protocol/deployments/abi'
 interface PrepareProps {
   handleNext: (adrs: []) => void
   selectedTokenFn: (token: any) => void
+  setTokenFn: (token: any) => void
+  setEnteredAdrsFn: (adrs: any) => void
+  storedSelectedToken?: any
+  storedEnteredAdrs?: any
 }
 
+const filter = createFilterOptions<any>()
+
 function Prepare(props: PrepareProps) {
-  const { handleNext, selectedTokenFn } = props
+  const {
+    handleNext,
+    selectedTokenFn,
+    storedSelectedToken,
+    storedEnteredAdrs,
+    setTokenFn,
+    setEnteredAdrsFn,
+  } = props
 
   const core = useCore()
 
-  const listOfTokens = Object.keys(core.tokens).map((key) => {
+  const listOfTokens: ERC20[] = Object.keys(core.tokens).map((key) => {
+    console.log('key', key)
     return core.tokens[key]
+  })
+
+  const stringTokens: any = listOfTokens?.map((item: any, i: number) => {
+    return { address: item.address, symbol: item.symbol, decimal: item.decimal }
   })
 
   const InputOption = ['Upload File', 'Insert Manually']
 
   const [listOfAddresses, setListOfAddresses] = useState<any>([])
-  const [enteredAdrs, setEnteredAdrs] = useState<any>('')
+  const [enteredAdrs, setEnteredAdrs] = useState<any>(storedEnteredAdrs)
   const [addressError, setAddressError] = useState<any>([])
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone()
   const [addAdrsDropdown, setaddAdrsDropdown] = useState<string | null>(
-    InputOption[0],
+    InputOption[1],
   )
   const [inputTokenValue, setInputTokenValue] = useState('')
   const [lineNumbers, setLineNumbers] = useState<number[]>([1])
-  const [selectedToken, setSelectedToken] = useState<any>()
-  const [showWarning, setShowWarning] = useState<boolean>(false)
-
-  // let fromToken = '0xb4d930279552397bba2ee473229f89ec245bc365'
+  const [selectedToken, setSelectedToken] = useState<any>(storedSelectedToken)
 
   useEffect(() => {
     handleError()
 
-    let list = listOfAddresses?.map((item: any) => {
-      return `${item.adrs}, ${item.value}`
-    })
-
-    setEnteredAdrs(list.join('\n'))
+    if (storedEnteredAdrs?.length) {
+      setEnteredAdrs(storedEnteredAdrs)
+    } else {
+      let list = listOfAddresses?.map((item: any) => {
+        return `${item.adrs}, ${item.value}`
+      })
+      setEnteredAdrs(list.join('\n'))
+      setEnteredAdrsFn(list.join('\n'))
+    }
   }, [listOfAddresses])
 
   useEffect(() => {
     selectedTokenFn(selectedToken)
+    setTokenFn(selectedToken)
   }, [selectedToken])
 
   const disableNextBtn =
@@ -151,27 +175,73 @@ function Prepare(props: PrepareProps) {
     }
   }
 
-  console.log('listOfAddresses', listOfAddresses)
-  console.log('selectedToken', selectedToken)
+  const filterTokenHandler = async (options: any, params: any) => {
+    const filtered = filter(options, params)
+    console.log('params', params)
+
+    if (params.inputValue !== '' && !filtered.length) {
+      if (ethers.utils.isAddress(params?.inputValue)) {
+        const contractOfToken = await new Contract(
+          params?.inputValue,
+          ABIS['IERC20'],
+          core.provider,
+        )
+        console.log('contractOfToken', contractOfToken)
+        const decimal = await contractOfToken?.decimals()
+        const symbol = await contractOfToken?.symbol()
+        console.log('symbol', symbol)
+
+        filtered.push(
+          new ERC20(params?.inputValue, core.provider, symbol, decimal),
+        )
+      }
+    }
+
+    return filtered
+  }
 
   return (
     <section>
       <div className={'row_spaceBetween_center marginB8'}>
-        <div>Token</div>
-        <div>Decimal</div>
+        <div style={{ flex: 9, marginRight: '32px' }}>Token</div>
+        <div style={{ flex: 1 }}>Decimal</div>
       </div>
       <div className={'row_spaceBetween_center marginB24'}>
         <div style={{ flex: 9, marginRight: '32px' }}>
           <Autocomplete
+            value={selectedToken}
+            onChange={async (e, token) => {
+              console.log('token', token)
+              setSelectedToken(token)
+              // if (token && ethers.utils.isAddress(token.address)) {
+              //   console.log('Here', token)
+              //   const contractOfToken = await new Contract(
+              //     token.address,
+              //     ABIS['IERC20'],
+              //     core.provider,
+              //   )
+              //   console.log('contractOfToken', contractOfToken)
+              //   const decimal = await contractOfToken?.decimals()
+              //   const symbol = await contractOfToken?.symbol()
+              //   console.log('symbol', symbol)
+              //   setSelectedToken(
+              //     new ERC20(token.address, core.provider, symbol, decimal),
+              //   )
+              // }
+            }}
+            // filterOptions={(options, params) => {
+            //   return filterTokenHandler(options, params)
+            // }}
             id="combo-box-demo"
-            options={listOfTokens}
-            getOptionLabel={(option: any) => `${option.address}`}
+            options={stringTokens}
+            getOptionLabel={(option: any) => {
+              return `${option.symbol} - ${option.address}`
+            }}
             getOptionSelected={(option, value) =>
               option.address === value.address
             }
             style={{ width: '100%', color: '#fff' }}
-            value={selectedToken}
-            onChange={(e, token) => setSelectedToken(token)}
+            freeSolo
             renderInput={(params: any) => (
               <TextField
                 {...params}
@@ -202,6 +272,7 @@ function Prepare(props: PrepareProps) {
               }}
               labelWidth={0}
               className={'white_text'}
+              disabled={true}
             />
           </FormControl>
         </div>

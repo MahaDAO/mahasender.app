@@ -50,6 +50,8 @@ export default function Home() {
     selectedToken: {},
   })
   const [amountToApprove, setAmountToApprove] = useState<number>(0)
+  const [storedSelectedToken, setStoredSelectedToken] = useState<any>()
+  const [storedEnteredAdrs, setStoredEnteredAdrs] = useState<string>()
 
   const steps = getSteps()
 
@@ -105,6 +107,10 @@ export default function Home() {
             selectedTokenFn={(token: any) =>
               setTextAreaFields({ ...textAreaFields, selectedToken: token })
             }
+            setTokenFn={(token: any) => setStoredSelectedToken(token)}
+            setEnteredAdrsFn={(adrs: string) => setStoredEnteredAdrs(adrs)}
+            storedSelectedToken={storedSelectedToken}
+            storedEnteredAdrs={storedEnteredAdrs}
           />
         )
       case 1:
