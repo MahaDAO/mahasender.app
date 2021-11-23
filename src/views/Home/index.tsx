@@ -53,15 +53,13 @@ export default function Home() {
 
   const steps = getSteps()
 
-  console.log('textAreaFields', textAreaFields)
-
   useEffect(() => {
     if (
       textAreaFields.noOfTokens > 0 &&
       textAreaFields.noOfTokens > Number(ethBalance)
     ) {
       setTextAreaFields({ ...textAreaFields, inSufficinetBal: true })
-    }
+    } else setTextAreaFields({ ...textAreaFields, inSufficinetBal: false })
   }, [textAreaFields.noOfTokens])
 
   const handleAmountRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,6 +93,8 @@ export default function Home() {
   const handleReset = () => {
     setActiveStep(0)
   }
+
+  console.log('textAreaFields', textAreaFields)
 
   function getStepContent(step: number) {
     switch (step) {
