@@ -241,7 +241,7 @@ function Prepare(props: PrepareProps) {
             //   return filterTokenHandler(options, params)
             // }}
             id="combo-box-demo"
-            options={stringTokens}
+            options={listOfTokens}
             getOptionLabel={(option: any) => {
               return `${option.symbol} - ${option.address}`
             }}
