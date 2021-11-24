@@ -20,6 +20,7 @@ import ImportCSV from '../../components/ImportCSV'
 import AccountButton from '../../components/Navbar/components/AccountButton'
 import ERC20 from '../../protocol/ERC20'
 import ABIS from '../../protocol/deployments/abi'
+import { useWallet } from 'use-wallet'
 interface PrepareProps {
   handleNext: (adrs: []) => void
   selectedTokenFn: (token: any) => void
@@ -41,6 +42,7 @@ function Prepare(props: PrepareProps) {
     setEnteredAdrsFn,
   } = props
 
+  const { account, connect } = useWallet()
   const core = useCore()
 
   const listOfTokens: ERC20[] = Object.keys(core.tokens).map((key) => {
@@ -68,16 +70,18 @@ function Prepare(props: PrepareProps) {
   useEffect(() => {
     handleError()
 
+    let list = listOfAddresses?.map((item: any) => {
+      return `${item.adrs},${item.value}`
+    })
+    setEnteredAdrs(list.join('\n'))
+    setEnteredAdrsFn(list.join('\n'))
+  }, [listOfAddresses])
+
+  useEffect(() => {
     if (storedEnteredAdrs?.length) {
       setEnteredAdrs(storedEnteredAdrs)
-    } else {
-      let list = listOfAddresses?.map((item: any) => {
-        return `${item.adrs}, ${item.value}`
-      })
-      setEnteredAdrs(list.join('\n'))
-      setEnteredAdrsFn(list.join('\n'))
     }
-  }, [listOfAddresses])
+  }, [storedEnteredAdrs])
 
   useEffect(() => {
     selectedTokenFn(selectedToken)
@@ -199,6 +203,10 @@ function Prepare(props: PrepareProps) {
 
     return filtered
   }
+
+  console.log('selectedToken', selectedToken)
+
+  console.log('listOfAddresses', listOfAddresses)
 
   return (
     <section>
@@ -361,11 +369,25 @@ function Prepare(props: PrepareProps) {
 
       {/* <AccountButton showWarning={showWarning} /> */}
 
-      <Button
-        text={'Next'}
-        onClick={() => handleNext(listOfAddresses)}
-        disabled={!disableNextBtn}
-      />
+      {!account ? (
+        <Button
+          text="Connect"
+          tracking_id={'connect_wallet'}
+          onClick={() => {
+            connect('injected')
+              .then(() => {
+                localStorage.removeItem('disconnectWallet')
+              })
+              .catch((e) => {})
+          }}
+        />
+      ) : (
+        <Button
+          text={'Next'}
+          onClick={() => handleNext(listOfAddresses)}
+          disabled={!disableNextBtn}
+        />
+      )}
     </section>
   )
 }

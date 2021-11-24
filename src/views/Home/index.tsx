@@ -23,6 +23,7 @@ import FormControl from '@material-ui/core/FormControl'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import useTokenBalance from '../../hooks/useTokenBalance'
 
 import TextWrapper from '../../components/TextWrapper'
 import HeadingBgDesign from '../../assets/images/HeadingBgDesign.png'
@@ -54,11 +55,12 @@ export default function Home() {
   const [storedEnteredAdrs, setStoredEnteredAdrs] = useState<string>()
 
   const steps = getSteps()
+  const mahaBalance = useTokenBalance(textAreaFields.selectedToken)
 
   useEffect(() => {
     if (
       textAreaFields.noOfTokens > 0 &&
-      textAreaFields.noOfTokens > Number(ethBalance)
+      textAreaFields.noOfTokens > Number(mahaBalance.value.toString())
     ) {
       setTextAreaFields({ ...textAreaFields, inSufficinetBal: true })
     } else setTextAreaFields({ ...textAreaFields, inSufficinetBal: false })

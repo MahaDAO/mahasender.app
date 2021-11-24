@@ -1,12 +1,10 @@
-import IERC20 from './abi/IERC20.json';
-import MahaToken from './abi/MahaToken.json';
-import { IABIS } from '../../utils/interface';
-import VotingEscrow from './abi/VotingEscrow.json';
+import IERC20 from "./abi/IERC20.json"
+import MahaSender from "./abi/MahaSender.json"
+import { IABIS } from "../../utils/interface"
 
 const abis: IABIS = {
-  IERC20,
-  MahaToken,
-  VotingEscrow
-};
+	IERC20,
+	MahaSender
+}
 
-export default abis;
+export default abis

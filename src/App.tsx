@@ -1,6 +1,8 @@
+import { Provider } from 'react-redux'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { UseWalletProvider } from 'use-wallet'
+import { SnackbarProvider } from 'notistack'
 import { useMediaQuery } from 'react-responsive'
 import { HashRouter as Router } from 'react-router-dom'
 import FormControl from '@material-ui/core/FormControl'
@@ -8,20 +10,16 @@ import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 
+import store from './state'
+import Updaters from './state/Updaters'
+import ProtocolProvider from './context/Provider'
+import ModalsProvider from './context/Modals'
 import Navbar from './components/Navbar'
 import config from './config'
 import Home from './views/Home'
 import NoMetamaskNotice from './components/NoMetamaskNotice'
+import Popups from './components/Popups'
 import useCore from './hooks/useCore'
-import TextWrapper from './components/TextWrapper'
-import HeadingBgDesign from './assets/images/HeadingBgDesign.png'
-import SelectOption from './components/SelectOptiion'
-import UploadIcon from './assets/icons/misc/UploadIcon.svg'
-import Button from './components/Button'
-import Prepare from './views/Home/1Prepare'
-import Approve from './views/Home/2Approve'
-import Confirm from './views/Home/3Confirm'
-import Send from './views/Home/4Send'
 
 const Providers: React.FC = ({ children }) => {
   return (
@@ -29,7 +27,20 @@ const Providers: React.FC = ({ children }) => {
       connectors={{ injected: {} }}
       // connectors={{ injected: { chainId: [4] } }}
     >
-      {children}
+      <Provider store={store}>
+        <Updaters />
+        <ProtocolProvider>
+          <ModalsProvider>
+            <SnackbarProvider
+              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+              maxSnack={2}
+            >
+              <Popups />
+              {children}
+            </SnackbarProvider>
+          </ModalsProvider>
+        </ProtocolProvider>
+      </Provider>
     </UseWalletProvider>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import styled from 'styled-components'
 import FormControl from '@material-ui/core/FormControl'
 import Radio from '@material-ui/core/Radio'
@@ -14,6 +14,7 @@ import Button from '../../components/Button'
 import ErrorIcon from '../../assets/icons/infoTip/Error.svg'
 import useTokenBalance from '../../hooks/useTokenBalance'
 import useCore from '../../hooks/useCore'
+import useApprove, { ApprovalState } from '../../hooks/callbacks/useApprove'
 
 interface ApproveProps {
   handleNext: (adrs?: []) => void
@@ -29,9 +30,27 @@ export default function Approve(props: ApproveProps) {
   const core = useCore()
   const ethBalance = ethers.utils.formatEther(balance)
 
-  const mahaBalance = useTokenBalance(core.tokens['MAHA'])
-
   const [amountRadio, setAmountRadio] = useState<string>('exactAmt')
+
+  const mahaBalance = useTokenBalance(textAreaFields.selectedToken)
+
+  console.log(
+    'core.contracts',
+    core.contracts,
+    core.contracts.MahaSender.address,
+  )
+
+  const [approveStatus, approve] = useApprove(
+    textAreaFields.selectedToken,
+    core.contracts.MahaSender.address,
+  )
+
+  const isApproved = useMemo(() => approveStatus === ApprovalState.APPROVED, [
+    approveStatus,
+  ])
+  const isApproving = useMemo(() => approveStatus === ApprovalState.PENDING, [
+    approveStatus,
+  ])
 
   useEffect(() => {
     if (amountRadio === 'exactAmt') amountToApproveFn(textAreaFields.noOfTokens)
@@ -45,7 +64,11 @@ export default function Approve(props: ApproveProps) {
   const disableNextBtn = !textAreaFields.inSufficinetBal
 
   console.log('ethBalance', ethBalance)
-  console.log('mahaBalance', mahaBalance)
+  console.log(
+    'mahaBalance',
+    mahaBalance.isLoading,
+    mahaBalance.value.toString(),
+  )
 
   return (
     <section>
@@ -72,7 +95,7 @@ export default function Approve(props: ApproveProps) {
       />
       <SummaryRow
         field={'Your token balance'}
-        amount={`${ethBalance}`}
+        amount={`${mahaBalance.value.toString()}`}
         unit={`${textAreaFields.selectedToken.symbol}`}
       />
       {/* <SummaryRow
@@ -159,7 +182,8 @@ export default function Approve(props: ApproveProps) {
           <Button
             text={'Confirm'}
             onClick={() => {
-              handleNext()
+              // handleNext()
+              // approve()
             }}
             disabled={!disableNextBtn}
           />
