@@ -45,6 +45,8 @@ function Prepare(props: PrepareProps) {
   const { account, connect } = useWallet()
   const core = useCore()
 
+  console.log('core', core)
+
   const listOfTokens: ERC20[] = Object.keys(core.tokens).map((key) => {
     console.log('key', key)
     return core.tokens[key]
@@ -94,6 +96,7 @@ function Prepare(props: PrepareProps) {
     listOfAddresses?.length !== 0
 
   console.log('disableNextBtn', disableNextBtn)
+  console.log('listOfAddresses', listOfAddresses)
 
   const handleManualData = () => {
     let addresses: any[]

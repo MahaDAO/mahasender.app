@@ -41,6 +41,7 @@ export default function Home() {
   const { balance } = useWallet()
   const ethBalance = ethers.utils.formatEther(balance)
 
+  const [txHashes, setTxHashes] = useState<string[]>([])
   const [activeStep, setActiveStep] = React.useState(0)
   const [amountRadio, setAmountRadio] = useState<string>('0')
   const [textAreaFields, setTextAreaFields] = useState<any>({
@@ -50,9 +51,8 @@ export default function Home() {
     inSufficinetBal: false,
     selectedToken: {},
   })
-  const [amountToApprove, setAmountToApprove] = useState<number>(0)
   const [storedSelectedToken, setStoredSelectedToken] = useState<any>()
-  const [storedEnteredAdrs, setStoredEnteredAdrs] = useState<string>()
+  const [storedEnteredAdrs, setStoredEnteredAdrs] = useState<string>('')
 
   const steps = getSteps()
   const mahaBalance = useTokenBalance(textAreaFields.selectedToken)
@@ -80,10 +80,12 @@ export default function Home() {
       setTextAreaFields({
         ...textAreaFields,
         noOfAdrs: adrs.length,
-        noOfTxns: Math.ceil(adrs.length / 5),
+        noOfTxns: Math.ceil(adrs.length / 2),
         noOfTokens: totalOfTokens,
       })
     }
+
+    console.log('activeStep', activeStep)
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
     setTimeout(() => setAmountRadio(`${activeStep + 1}`), 200)
@@ -121,7 +123,6 @@ export default function Home() {
             handleNext={handleNext}
             textAreaFields={textAreaFields}
             handleBack={handleBack}
-            amountToApproveFn={(val: number) => setAmountToApprove(val)}
           />
         )
       case 2:
@@ -130,10 +131,12 @@ export default function Home() {
             textAreaFields={textAreaFields}
             handleNext={handleNext}
             handleBack={handleBack}
+            setTxHashes={setTxHashes}
+            storedEnteredAdrs={storedEnteredAdrs}
           />
         )
       case 3:
-        return <Send handleBack={handleBack} />
+        return <Send txHashes={txHashes} handleBack={handleBack} />
       default:
         return 'Unknown step'
     }

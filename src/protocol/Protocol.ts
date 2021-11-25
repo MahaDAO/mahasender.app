@@ -17,8 +17,10 @@ export class Protocol {
   contracts: { [name: string]: Contract };
   provider: ethers.providers.BaseProvider;
 
+
+  ARTH: ERC20;
   MAHA: ERC20;
-  MAHA2: ERC20;
+  SCLP: ERC20;
 
   tokens: {
     [name: string]: ERC20;
@@ -34,12 +36,17 @@ export class Protocol {
       this.contracts[name] = new Contract(deployment.address, ABIS[deployment.abi], provider);
     }
 
-    this.MAHA = new ERC20(deployments.MahaToken.address, provider, 'MAHA', 18);
-    this.MAHA2 = new ERC20(deployments.MahaToken.address, provider, 'MAHA2', 18);
+    console.log('deployments', deployments)
+
+    this.ARTH = new ERC20(deployments.ARTHStablecoin.address, provider, 'ARTH', 18);
+    this.MAHA = new ERC20(deployments.MahaSender.address, provider, 'MAHA', 18);
+    this.SCLP = new ERC20(deployments.Scallop.address, provider, 'SLP', 18);
+
     
     this.tokens = {
+      ARTH: this.ARTH,
       MAHA: this.MAHA,
-      MAHA2: this.MAHA2
+      SCLP: this.SCLP
     };
 
     this.config = cfg;
@@ -60,7 +67,9 @@ export class Protocol {
     }
 
     const tokens = [
-      this.MAHA
+      this.MAHA,
+      this.SCLP,
+      this.ARTH
     ];
 
     for (const token of tokens) {

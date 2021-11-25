@@ -7,15 +7,17 @@ import WhiteSquare from '../../assets/icons/checkbox/WhiteSquare.svg'
 import Cross from '../../assets/icons/misc/Cross.svg'
 import GreenOutline from '../../assets/icons/checkbox/GreenOutline.svg'
 interface SendProps {
+  txHashes: string[]
   handleBack: () => void
 }
 
 export default function Send(props: SendProps) {
-  const { handleBack } = props
+  const { handleBack, txHashes } = props
 
   const [txConfirmed, setTxConfirmed] = useState<boolean>(true)
   const [txMined, setTxMined] = useState(false)
 
+  console.log('HERE', txHashes)
   return (
     <section>
       {txMined ? (

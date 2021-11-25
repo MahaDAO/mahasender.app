@@ -4,6 +4,7 @@ import FormControl from '@material-ui/core/FormControl'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormHelperText from '@material-ui/core/FormHelperText'
 import { NumberFormat } from 'xlsx'
 import { useWallet } from 'use-wallet'
 import { ethers } from 'ethers'
@@ -15,22 +16,23 @@ import ErrorIcon from '../../assets/icons/infoTip/Error.svg'
 import useTokenBalance from '../../hooks/useTokenBalance'
 import useCore from '../../hooks/useCore'
 import useApprove, { ApprovalState } from '../../hooks/callbacks/useApprove'
+import { getDisplayBalance } from '../../utils/formatBalance'
 
 interface ApproveProps {
   handleNext: (adrs?: []) => void
   handleBack: () => void
-  amountToApproveFn: (val: any) => void
   textAreaFields: any
 }
 
 export default function Approve(props: ApproveProps) {
-  const { handleNext, handleBack, amountToApproveFn, textAreaFields } = props
+  const { handleNext, handleBack, textAreaFields } = props
 
   const { balance } = useWallet()
   const core = useCore()
   const ethBalance = ethers.utils.formatEther(balance)
 
   const [amountRadio, setAmountRadio] = useState<string>('exactAmt')
+  const [amountToApprove, setAmountToApprove] = useState<string>('')
 
   const mahaBalance = useTokenBalance(textAreaFields.selectedToken)
 
@@ -48,14 +50,27 @@ export default function Approve(props: ApproveProps) {
   const isApproved = useMemo(() => approveStatus === ApprovalState.APPROVED, [
     approveStatus,
   ])
+
+  // const isApproved = false
+
   const isApproving = useMemo(() => approveStatus === ApprovalState.PENDING, [
     approveStatus,
   ])
 
   useEffect(() => {
-    if (amountRadio === 'exactAmt') amountToApproveFn(textAreaFields.noOfTokens)
-    else amountToApproveFn(10000)
+    if (amountRadio === 'exactAmt')
+      setAmountToApprove(textAreaFields.noOfTokens)
+    else
+      setAmountToApprove(
+        Number(
+          getDisplayBalance(mahaBalance.value, 18, 3),
+        ).toLocaleString('en-US', { minimumFractionDigits: 3 }),
+      )
   }, [amountRadio])
+
+  useEffect(() => {
+    if (isApproved) handleNext()
+  }, [isApproved])
 
   const handleAmountRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmountRadio((event.target as HTMLInputElement).value)
@@ -69,6 +84,10 @@ export default function Approve(props: ApproveProps) {
     mahaBalance.isLoading,
     mahaBalance.value.toString(),
   )
+
+  // if (isApproved) handleNext()
+
+  console.log('isApproved', isApproved)
 
   return (
     <section>
@@ -95,7 +114,9 @@ export default function Approve(props: ApproveProps) {
       />
       <SummaryRow
         field={'Your token balance'}
-        amount={`${mahaBalance.value.toString()}`}
+        amount={`${Number(
+          getDisplayBalance(mahaBalance.value, 18, 3),
+        ).toLocaleString('en-US', { minimumFractionDigits: 3 })}`}
         unit={`${textAreaFields.selectedToken.symbol}`}
       />
       {/* <SummaryRow
@@ -123,7 +144,7 @@ export default function Approve(props: ApproveProps) {
           name="gender1"
           value={amountRadio}
           onChange={handleAmountRadio}
-          className={'flex_row marginB42'}
+          className={'flex_row'}
         >
           <FormControlLabel
             value="exactAmt"
@@ -151,13 +172,16 @@ export default function Approve(props: ApproveProps) {
             label="Your full token balance"
           />
         </RadioGroup>
+        <FormHelperText className={'marginB42'}>
+          {amountRadio === 'fullTokenBal' ? amountToApprove : ''}{' '}
+        </FormHelperText>
       </FormControl>
       {textAreaFields.inSufficinetBal ? (
         <ErrorAlert>
           <img src={ErrorIcon} alt={'ErrorIcon'} className={'marginR12'} />
           <div>
             <TextWrapper
-              text={`Insufficient MAHA balance`}
+              text={`Insufficient ${textAreaFields.selectedToken.symbol} balance`}
               fontWeight={300}
               fontSize={12}
               lineHeight={'130%'}
@@ -182,10 +206,10 @@ export default function Approve(props: ApproveProps) {
           <Button
             text={'Confirm'}
             onClick={() => {
-              // handleNext()
-              // approve()
+              console.log('approve', approve())
             }}
             disabled={!disableNextBtn}
+            loading={isApproving}
           />
         </div>
       </div>
