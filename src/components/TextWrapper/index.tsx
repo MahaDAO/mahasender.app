@@ -59,7 +59,7 @@ interface StyledTextProps {
   fcolor: string
 }
 
-const StyledText = styled.p<StyledTextProps>`
+const StyledText = styled.div<StyledTextProps>`
   font-family: ${(props) => props.fontFamily};
   font-style: ${(props) => props.fontStyle};
   font-weight: ${(props) => props.fontWeight};

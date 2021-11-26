@@ -5,6 +5,7 @@
 	line-height: 140% !important;
 	color: rgba(255, 255, 255, 0.64) !important;
 	font-family: 'Inter' !important;
+	border-radius: 6px !important;
 }
 
 .MuiAutocomplete-paper {
@@ -34,3 +35,17 @@
 	font-size: 14px !important;
 	line-height: 20px !important;
 }
+
+.MuiSelect-icon {
+	color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.MuiFormControlLabel-root {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+
+/* .Mui-checked {
+	background-color: #137cbd !important;
+	background-image: linear-gradient(180deg, hsla(0, 0%, 100%, .1), hsla(0, 0%, 100%, 0)) !important;
+} */

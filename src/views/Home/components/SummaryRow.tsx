@@ -17,12 +17,11 @@ export default function SummaryRow(props: SummaryRowProp) {
         fontSize={14}
         lineHeight={'20px'}
         Fcolor={'rgba(255, 255, 255, 0.64)'}
-        className={'margin0'}
       />
       <div className={'row_all_center'}>
         <TextWrapper
           text={`${amount}`}
-          className={'marginR4 margin0'}
+          className={'marginR4'}
           fontWeight={600}
           fontSize={14}
           lineHeight={'20px'}
@@ -42,7 +41,7 @@ export default function SummaryRow(props: SummaryRowProp) {
               fontSize={12}
               lineHeight={'150%'}
               Fcolor={'rgba(255, 255, 255, 0.64)'}
-              className={'line_spacing008em margin0'}
+              className={'line_spacing008em'}
             />
           </div>
         )}

@@ -19,10 +19,53 @@ export default function Send(props: SendProps) {
   const allTransactions = useAllTransactions()
 
   const [txConfirmed, setTxConfirmed] = useState<boolean>(true)
-  const [txMined, setTxMined] = useState(false)
+  const [txMined, setTxMined] = useState<boolean>(false)
+
+  // const transactionData = () => {
+  //   Object.keys(allTransactions)?.map((key: any, i: number, txns) => {
+  //     const summary = allTransactions[key].summary
+  //     const pending = !allTransactions[key].receipt
+  //     const success =
+  //       !pending &&
+  //       allTransactions[key] &&
+  //       (allTransactions[key].receipt?.status === 1 ||
+  //         typeof allTransactions[key].receipt?.status === 'undefined')
+
+  //     console.log('txns.length', txns.length - 1, i, success)
+
+  //     if (i === txns.length - 1 && success) {
+  //       console.log('last')
+  //       // setTxMined(true)
+  //     }
+
+  //     return (
+  //       <TxnHashDiv>
+  //         <div>
+  //           <TextWrapper
+  //             text={`${truncateMiddle(allTransactions[key].hash, 12, '...')}`}
+  //             fontWeight={300}
+  //             fontSize={14}
+  //             lineHeight={'130%'}
+  //           />
+  //         </div>
+
+  //         <IconWrapper pending={pending} success={success}>
+  //           {pending ? (
+  //             <IconLoader iconName={'ColoredPending'} iconType={'status'} />
+  //           ) : success ? (
+  //             <IconLoader iconName={'ColoredSuccess'} iconType={'status'} />
+  //           ) : (
+  //             <IconLoader iconName={'ColoredAlert'} iconType={'status'} />
+  //           )}
+  //         </IconWrapper>
+  //       </TxnHashDiv>
+  //     )
+  //   })
+  // }
 
   console.log('HERE', txHashes)
   console.log('Object.keys(allTransactions)', Object.keys(allTransactions))
+  console.log('txMined', txMined)
   return (
     <section>
       {txMined ? (
@@ -37,7 +80,6 @@ export default function Send(props: SendProps) {
               }
               fontSize={16}
               lineHeight={'150%'}
-              className={'margin0'}
             />
           </div>
           <div onClick={() => setTxMined(false)} className={'pointer'}>
@@ -49,7 +91,7 @@ export default function Send(props: SendProps) {
       {!txConfirmed ? (
         <TextWrapper
           text={'Please confirm the transaction in metamask.'}
-          className={'marginB220 margin0'}
+          className={'marginB220'}
           fontWeight={600}
           fontSize={14}
           lineHeight={'20px'}
@@ -62,14 +104,14 @@ export default function Send(props: SendProps) {
             text={
               'Transactions were sent out. Now wait until all the transactions are mined.'
             }
-            className={'margin0 marginB12'}
+            className={'marginB12'}
             fontWeight={600}
             fontSize={14}
             lineHeight={'20px'}
             Fcolor={'rgba(255, 255, 255, 0.88)'}
           />
 
-          {Object.keys(allTransactions)?.map((key: any, i: number) => {
+          {Object.keys(allTransactions)?.map((key: any, i: number, txns) => {
             const summary = allTransactions[key].summary
             const pending = !allTransactions[key].receipt
             const success =
@@ -78,7 +120,12 @@ export default function Send(props: SendProps) {
               (allTransactions[key].receipt?.status === 1 ||
                 typeof allTransactions[key].receipt?.status === 'undefined')
 
-            console.log('pending', pending, 'success', success)
+            console.log('txns.length', txns.length - 1, i, success)
+
+            if (i === txns.length - 1 && success) {
+              console.log('last')
+              // setTxMined(true)
+            }
 
             return (
               <TxnHashDiv>
@@ -92,7 +139,6 @@ export default function Send(props: SendProps) {
                     fontWeight={300}
                     fontSize={14}
                     lineHeight={'130%'}
-                    className={'margin0'}
                   />
                 </div>
 

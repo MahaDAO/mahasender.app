@@ -106,6 +106,10 @@ const GlobalStyles = createGlobalStyle`
     margin: 0 auto !important;
   }
 
+  .marginT8{
+    margin-top: 8px;
+  }
+
   .marginT24{
     margin-top: 24px;
   }
@@ -134,16 +138,20 @@ const GlobalStyles = createGlobalStyle`
     margin-bottom: 12px;
   }
 
+  .marginB16{
+    margin-bottom: 16px;
+  }
+
   .marginB20{
     margin-bottom: 20px;
   }
 
   .marginB24{
-    margin-bottom: 24px;
+    margin-bottom: 24px !important;
   }
 
   .marginB42{
-    margin-bottom: 42px;
+    margin-bottom: 42px !important;
   }
 
   .marginB64{
@@ -173,7 +181,7 @@ const GlobalStyles = createGlobalStyle`
   /* paddings */
 
   .padding20px {
-    padding: 20px;
+    padding: 20px !important;
   }
 
   .line_spacing008em{

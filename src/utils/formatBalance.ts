@@ -1,6 +1,8 @@
 import { BigNumber } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
+import ERC20 from '../protocol/ERC20';
+
 export function getBalance(
   balance: BigNumber,
   decimals = 18
@@ -31,11 +33,49 @@ export const getDisplayBalance = (
   }
 };
 
+export const getDisplayBalanceToken = (
+  balance: BigNumber,
+  token: ERC20,
+  fractionDigits = 3
+): string => {
+  try {
+    const decimals = token.decimal;
+    const formattedBalance: string = getBalance(balance, decimals);
+    const decimalsPointIndex = formattedBalance.indexOf('.');
+    if (decimalsPointIndex === -1) return formattedBalance;
+    return (
+      formattedBalance.slice(0, decimalsPointIndex) +
+      '.' +
+      formattedBalance.slice(decimalsPointIndex + 1, decimalsPointIndex + 1 + fractionDigits)
+    );
+  } catch (error) {
+    return '0';
+  }
+};
+
 export const formatToBN = (
   value: number | string,
   decimals = 18
 ): BigNumber => {
   try {
+    const [beforeDecimals, afterDecimal] = `${value}`.split('.');
+
+    const beforeDecimalsPrecisionText = beforeDecimals?.slice(0, 18) || '0';
+    const afterDecimalsPrecisionText = afterDecimal?.slice(0, decimals) || '0';
+    const fixedPrecisionValue = `${beforeDecimalsPrecisionText}.${afterDecimalsPrecisionText}`;
+
+    return BigNumber.from(parseUnits(`${fixedPrecisionValue}`, decimals));
+  } catch (error) {
+    return BigNumber.from('0');
+  }
+};
+
+export const formatToBNToken = (
+  value: number | string,
+  token: ERC20
+): BigNumber => {
+  try {
+    const decimals = token.decimal;
     const [beforeDecimals, afterDecimal] = `${value}`.split('.');
 
     const beforeDecimalsPrecisionText = beforeDecimals?.slice(0, 18) || '0';

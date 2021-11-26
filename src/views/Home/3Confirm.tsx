@@ -6,8 +6,13 @@ import TextWrapper from '../../components/TextWrapper'
 import SummaryRow from './components/SummaryRow'
 import Button from '../../components/Button'
 import useTokenBalance from '../../hooks/useTokenBalance'
-import { getDisplayBalance } from '../../utils/formatBalance'
+import {
+  getDisplayBalanceToken,
+  formatToBNToken,
+} from '../../utils/formatBalance'
 import useBulkTransfer from '../../hooks/callbacks/useBulkTransfer'
+import { balanceToDecimal } from '../../utils/etherUtils'
+
 interface ConfirmProps {
   handleNext: (adrs?: []) => void
   handleBack: () => void
@@ -26,7 +31,7 @@ export default function Confirm(props: ConfirmProps) {
   } = props
   const { balance } = useWallet()
   const ethBalance = ethers.utils.formatEther(balance)
-  const mahaBalance = useTokenBalance(textAreaFields.selectedToken)
+  const tokenBalance = useTokenBalance(textAreaFields.selectedToken)
 
   const [addressArray, setAddressArray] = useState<any[]>([])
   const [valuesArray, setValuesArray] = useState<any[]>([])
@@ -58,7 +63,10 @@ export default function Confirm(props: ConfirmProps) {
       listOfAddresses?.map((item: any) => {
         console.log('item', item.adrs, item.value)
         setAddressArray((state) => [...state, item.adrs])
-        setValuesArray((state) => [...state, item.value])
+        setValuesArray((state) => [
+          ...state,
+          formatToBNToken(item.value, textAreaFields.selectedToken),
+        ])
       })
     }
   }, [listOfAddresses])
@@ -69,9 +77,7 @@ export default function Confirm(props: ConfirmProps) {
     valuesArray,
     textAreaFields.noOfTxns,
   )
-  console.log('storedEnteredAdrs', storedEnteredAdrs)
-  console.log('listOfAddresses', listOfAddresses)
-  console.log('bulkTransferAction', bulkTransferAction)
+  console.log('balanceToDecimal', balanceToDecimal('1'))
   console.log('addressArray', addressArray, valuesArray)
 
   const sendHandler = () => {
@@ -89,7 +95,7 @@ export default function Confirm(props: ConfirmProps) {
         fontSize={14}
         lineHeight={'20px'}
         Fcolor={'rgba(255, 255, 255, 0.88)'}
-        className={'margin0 marginB12'}
+        className={'marginB12'}
       />
       <section className={'marginB42'}>
         <SummaryRow
@@ -108,7 +114,11 @@ export default function Confirm(props: ConfirmProps) {
         <SummaryRow
           field={'Your token balance'}
           amount={`${Number(
-            getDisplayBalance(mahaBalance.value, 18, 3),
+            getDisplayBalanceToken(
+              tokenBalance.value,
+              textAreaFields.selectedToken,
+              3,
+            ),
           ).toLocaleString('en-US', { minimumFractionDigits: 3 })}`}
           unit={`${textAreaFields.selectedToken.symbol}`}
         />

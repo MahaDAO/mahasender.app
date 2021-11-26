@@ -1,8 +1,17 @@
 import { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
+import {
+  createStyles,
+  makeStyles,
+  withStyles,
+  Theme,
+} from '@material-ui/core/styles'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
 import FormControl from '@material-ui/core/FormControl'
 import TextField from '@material-ui/core/TextField'
+import Select from '@material-ui/core/Select'
+import MenuItem from '@material-ui/core/MenuItem'
+import InputBase from '@material-ui/core/InputBase'
 import Autocomplete, {
   createFilterOptions,
 } from '@material-ui/lab/Autocomplete'
@@ -10,8 +19,9 @@ import { useDropzone } from 'react-dropzone'
 import { Contract, ethers } from 'ethers'
 import * as _ from 'underscore'
 import useStateWithCallback from 'use-state-with-callback'
-import useCore from '../../hooks/useCore'
+import { useWallet } from 'use-wallet'
 
+import useCore from '../../hooks/useCore'
 import TextWrapper from '../../components/TextWrapper'
 import SelectOption from '../../components/SelectOptiion'
 import UploadIcon from '../../assets/icons/misc/UploadIcon.svg'
@@ -20,7 +30,7 @@ import ImportCSV from '../../components/ImportCSV'
 import AccountButton from '../../components/Navbar/components/AccountButton'
 import ERC20 from '../../protocol/ERC20'
 import ABIS from '../../protocol/deployments/abi'
-import { useWallet } from 'use-wallet'
+import IconLoader from '../../components/IconLoader'
 interface PrepareProps {
   handleNext: (adrs: []) => void
   selectedTokenFn: (token: any) => void
@@ -31,6 +41,40 @@ interface PrepareProps {
 }
 
 const filter = createFilterOptions<any>()
+
+const BootstrapInput = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      'label + &': {
+        marginTop: theme.spacing(3),
+      },
+    },
+    input: {
+      borderRadius: 6,
+      position: 'relative',
+      fontWeight: 400,
+      backgroundColor: '#514C49',
+      fontSize: '14px',
+      lineHeight: '20px',
+      padding: '12px 26px 12px 12px',
+      transition: theme.transitions.create(['border-color', 'box-shadow']),
+      fontFamily: 'Inter',
+      color: 'rgba(255, 255, 255, 0.88)',
+      '&:focus': {
+        borderRadius: 6,
+        position: 'relative',
+        fontWeight: 400,
+        backgroundColor: '#514C49',
+        fontSize: '14px',
+        lineHeight: '20px',
+        padding: '12px 26px 12px 12px',
+        transition: theme.transitions.create(['border-color', 'box-shadow']),
+        fontFamily: 'Inter',
+        color: 'rgba(255, 255, 255, 0.88)',
+      },
+    },
+  }),
+)(InputBase)
 
 function Prepare(props: PrepareProps) {
   const {
@@ -63,7 +107,7 @@ function Prepare(props: PrepareProps) {
   const [addressError, setAddressError] = useState<any>([])
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone()
   const [addAdrsDropdown, setaddAdrsDropdown] = useState<string | null>(
-    InputOption[1],
+    'Insert Manually',
   )
   const [inputTokenValue, setInputTokenValue] = useState('')
   const [lineNumbers, setLineNumbers] = useState<number[]>([1])
@@ -182,6 +226,10 @@ function Prepare(props: PrepareProps) {
     }
   }
 
+  const handleSelect = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setaddAdrsDropdown(event.target.value as string)
+  }
+
   const filterTokenHandler = async (options: any, params: any) => {
     const filtered = filter(options, params)
     console.log('params', params)
@@ -214,8 +262,24 @@ function Prepare(props: PrepareProps) {
   return (
     <section>
       <div className={'row_spaceBetween_center marginB8'}>
-        <div style={{ flex: 9, marginRight: '32px' }}>Token</div>
-        <div style={{ flex: 1 }}>Decimal</div>
+        <div style={{ flex: 9, marginRight: '32px' }}>
+          <TextWrapper
+            text={'Token'}
+            fontWeight={300}
+            fontSize={14}
+            lineHeight={'140%'}
+            Fcolor={'rgba(255, 255, 255, 0.88)'}
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <TextWrapper
+            text={'Decimal'}
+            fontWeight={300}
+            fontSize={14}
+            lineHeight={'140%'}
+            Fcolor={'rgba(255, 255, 255, 0.88)'}
+          />
+        </div>
       </div>
       <div className={'row_spaceBetween_center marginB24'}>
         <div style={{ flex: 9, marginRight: '32px' }}>
@@ -289,9 +353,30 @@ function Prepare(props: PrepareProps) {
         </div>
       </div>
       <div className={'row_spaceBetween_center marginB8'}>
-        <div style={{ flex: 2 }}>Give addresses with Amounts</div>
-        <div style={{ flex: 1 }}>
-          <Autocomplete
+        <div style={{ flex: 2 }}>
+          <TextWrapper
+            text={'Give addresses with Amounts'}
+            fontWeight={300}
+            fontSize={14}
+            lineHeight={'140%'}
+            Fcolor={'rgba(255, 255, 255, 0.88)'}
+          />
+        </div>
+        <div>
+          <FormControl>
+            <Select
+              labelId="demo-customized-select-label"
+              id="demo-customized-select"
+              value={addAdrsDropdown}
+              onChange={handleSelect}
+              input={<BootstrapInput />}
+              defaultValue={'Insert Manually'}
+            >
+              <MenuItem value={'Insert Manually'}>Insert Manually</MenuItem>
+              <MenuItem value={'Upload File'}>Upload File</MenuItem>
+            </Select>
+          </FormControl>
+          {/* <Autocomplete
             id="combo-box-demo"
             options={InputOption}
             value={addAdrsDropdown}
@@ -313,7 +398,7 @@ function Prepare(props: PrepareProps) {
                 style={{ color: '#fff' }}
               />
             )}
-          />
+          /> */}
         </div>
       </div>
 
@@ -334,7 +419,7 @@ function Prepare(props: PrepareProps) {
                   fontSize={14}
                   lineHeight={'140%'}
                   Fcolor={'rgba(255, 255, 255, 0.88)'}
-                  className={'margin0 marginTB2'}
+                  className={'marginTB2'}
                 />
               ))}
             </div>
@@ -351,8 +436,28 @@ function Prepare(props: PrepareProps) {
         )}
       </UploadFileContainer>
       <div className={'row_spaceBetween_center marginB42'}>
-        <div>Accepted files : CSV, Excel, TXT</div>
-        <div>Sample file</div>
+        <TextWrapper
+          text={'Accepted files : CSV, Excel, TXT'}
+          fontWeight={300}
+          fontSize={14}
+          lineHeight={'140%'}
+          Fcolor={'rgba(255, 255, 255, 0.88)'}
+        />
+        <div className={'flex_row_center_start pointer'}>
+          <TextWrapper
+            text={'Sample file'}
+            fontWeight={300}
+            fontSize={14}
+            lineHeight={'140%'}
+            Fcolor={'rgba(255, 255, 255, 0.88)'}
+            className={'marginR4'}
+          />
+          <IconLoader
+            iconName={'DownloadIcon'}
+            iconType={'misc'}
+            className="m-r-8"
+          />
+        </div>
       </div>
 
       {addressError.length ? (

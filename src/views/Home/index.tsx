@@ -32,6 +32,7 @@ import Approve from './2Approve'
 import Confirm from './3Confirm'
 import Send from './4Send'
 import { useWallet } from 'use-wallet'
+import IconLoader from '../../components/IconLoader'
 
 function getSteps() {
   return ['Prepare', 'Approve', 'Confirm', 'Send']
@@ -48,22 +49,22 @@ export default function Home() {
     noOfAdrs: 0,
     noOfTokens: 0,
     noOfTxns: 0,
-    inSufficinetBal: false,
+    inSufficientBal: false,
     selectedToken: {},
   })
   const [storedSelectedToken, setStoredSelectedToken] = useState<any>()
   const [storedEnteredAdrs, setStoredEnteredAdrs] = useState<string>('')
 
   const steps = getSteps()
-  const mahaBalance = useTokenBalance(textAreaFields.selectedToken)
+  const tokenBalance = useTokenBalance(textAreaFields.selectedToken)
 
   useEffect(() => {
     if (
       textAreaFields.noOfTokens > 0 &&
-      textAreaFields.noOfTokens > Number(mahaBalance.value.toString())
+      textAreaFields.noOfTokens > Number(tokenBalance.value.toString())
     ) {
-      setTextAreaFields({ ...textAreaFields, inSufficinetBal: true })
-    } else setTextAreaFields({ ...textAreaFields, inSufficinetBal: false })
+      setTextAreaFields({ ...textAreaFields, inSufficientBal: true })
+    } else setTextAreaFields({ ...textAreaFields, inSufficientBal: false })
   }, [textAreaFields.noOfTokens])
 
   const handleAmountRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -173,7 +174,7 @@ export default function Home() {
               lineHeight={'44px'}
               align={'center'}
               fontFamily={'Syne'}
-              className={'margin0'}
+              className={'marginB16'}
             />
             <TextWrapper
               text={'The fast and most secure way to bulk send token'}
@@ -208,7 +209,10 @@ export default function Home() {
                 }`}
               ></ProgressDiv>
             </div>
-            <FormControl component="fieldset">
+            <FormControl
+              component="fieldset"
+              style={{ boxSizing: 'border-box' }}
+            >
               <RadioGroup
                 aria-label="gender"
                 name="gender1"
@@ -216,45 +220,84 @@ export default function Home() {
                 onChange={handleAmountRadio}
                 className={'flex_row marginB42'}
               >
-                <RadioContainer>
+                <RadioContainer
+                  className={`${activeStep >= 1 ? 'marginT8' : ''}`}
+                >
                   <FormControlLabel
                     value={'0'}
                     control={
-                      <Radio
-                        className={`${
-                          activeStep === 0 ? 'orange_text' : 'rgb256_064_text'
-                        }`}
-                      />
+                      activeStep >= 1 ? (
+                        <IconLoader
+                          iconName={'CompletedIcon'}
+                          iconType={'misc'}
+                          className={'marginR8'}
+                        />
+                      ) : (
+                        <Radio
+                          className={`${
+                            activeStep === 0 ? 'orange_text' : 'rgb256_064_text'
+                          }`}
+                        />
+                      )
                     }
+                    className={`${
+                      activeStep === 0 ? 'white_text' : 'rgb256_064_text'
+                    }`}
                     label="Prepare"
                   />
                 </RadioContainer>
-                <RadioContainer>
+                <RadioContainer
+                  className={`${activeStep >= 2 ? 'marginT8' : ''}`}
+                >
                   <FormControlLabel
                     value={'1'}
                     control={
-                      <Radio
-                        className={`${
-                          activeStep === 1 ? 'orange_text' : 'rgb256_064_text'
-                        }`}
-                        disabled={activeStep === 0 || activeStep < 1}
-                      />
+                      activeStep >= 2 ? (
+                        <IconLoader
+                          iconName={'CompletedIcon'}
+                          iconType={'misc'}
+                          className={'marginR8'}
+                        />
+                      ) : (
+                        <Radio
+                          className={`${
+                            activeStep === 1 ? 'orange_text' : 'rgb256_064_text'
+                          }`}
+                          disabled={activeStep === 0 || activeStep < 1}
+                        />
+                      )
                     }
                     label="Approve"
+                    className={`${
+                      activeStep === 1 ? 'white_text' : 'rgb256_064_text'
+                    }`}
                   />
                 </RadioContainer>
-                <RadioContainer>
+                <RadioContainer
+                  className={`${activeStep >= 3 ? 'marginT8' : 'margin0'}`}
+                >
                   <FormControlLabel
                     value={'2'}
                     control={
-                      <Radio
-                        className={`${
-                          activeStep === 2 ? 'orange_text' : 'rgb256_064_text'
-                        }`}
-                      />
+                      activeStep >= 3 ? (
+                        <IconLoader
+                          iconName={'CompletedIcon'}
+                          iconType={'misc'}
+                          className={'marginR8'}
+                        />
+                      ) : (
+                        <Radio
+                          className={`${
+                            activeStep === 2 ? 'orange_text' : 'rgb256_064_text'
+                          }`}
+                        />
+                      )
                     }
                     label="Confirm"
                     disabled={activeStep === 1 || activeStep < 2}
+                    className={`${
+                      activeStep === 2 ? 'white_text' : 'rgb256_064_text'
+                    }`}
                   />
                 </RadioContainer>
                 <RadioContainer>
@@ -269,6 +312,9 @@ export default function Home() {
                     }
                     label="Send"
                     disabled={activeStep === 2 || activeStep < 3}
+                    className={`${
+                      activeStep === 3 ? 'white_text' : 'rgb256_064_text'
+                    }`}
                   />
                 </RadioContainer>
               </RadioGroup>

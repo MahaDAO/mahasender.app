@@ -4,7 +4,6 @@ import {useTransactionAdder} from '../../state/transactions/hooks'
 
 import useCore from '../useCore'
 import { useAddPopup } from '../../state/application/hooks';
-import { getDisplayBalance } from '../../utils/formatBalance';
 import formatErrorMessage from '../../utils/formatErrorMessage';
 
 const useBulkTransfer = (

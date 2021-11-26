@@ -16,7 +16,7 @@ import ErrorIcon from '../../assets/icons/infoTip/Error.svg'
 import useTokenBalance from '../../hooks/useTokenBalance'
 import useCore from '../../hooks/useCore'
 import useApprove, { ApprovalState } from '../../hooks/callbacks/useApprove'
-import { getDisplayBalance } from '../../utils/formatBalance'
+import { getDisplayBalanceToken } from '../../utils/formatBalance'
 
 interface ApproveProps {
   handleNext: (adrs?: []) => void
@@ -34,7 +34,7 @@ export default function Approve(props: ApproveProps) {
   const [amountRadio, setAmountRadio] = useState<string>('exactAmt')
   const [amountToApprove, setAmountToApprove] = useState<string>('')
 
-  const mahaBalance = useTokenBalance(textAreaFields.selectedToken)
+  const tokenBalance = useTokenBalance(textAreaFields.selectedToken)
 
   console.log(
     'core.contracts',
@@ -63,7 +63,11 @@ export default function Approve(props: ApproveProps) {
     else
       setAmountToApprove(
         Number(
-          getDisplayBalance(mahaBalance.value, 18, 3),
+          getDisplayBalanceToken(
+            tokenBalance.value,
+            textAreaFields.selectedToken,
+            3,
+          ),
         ).toLocaleString('en-US', { minimumFractionDigits: 3 }),
       )
   }, [amountRadio])
@@ -76,13 +80,13 @@ export default function Approve(props: ApproveProps) {
     setAmountRadio((event.target as HTMLInputElement).value)
   }
 
-  const disableNextBtn = !textAreaFields.inSufficinetBal
+  const disableNextBtn = !textAreaFields.inSufficientBal
 
   console.log('ethBalance', ethBalance)
   console.log(
-    'mahaBalance',
-    mahaBalance.isLoading,
-    mahaBalance.value.toString(),
+    'tokenBalance',
+    tokenBalance.isLoading,
+    tokenBalance.value.toString(),
   )
 
   // if (isApproved) handleNext()
@@ -97,7 +101,7 @@ export default function Approve(props: ApproveProps) {
         fontSize={14}
         lineHeight={'20px'}
         Fcolor={'rgba(255, 255, 255, 0.88)'}
-        className={'margin0 marginB12'}
+        className={'marginB12'}
       />
       <SummaryRow
         field={'Total number of addresses'}
@@ -115,7 +119,11 @@ export default function Approve(props: ApproveProps) {
       <SummaryRow
         field={'Your token balance'}
         amount={`${Number(
-          getDisplayBalance(mahaBalance.value, 18, 3),
+          getDisplayBalanceToken(
+            tokenBalance.value,
+            textAreaFields.selectedToken,
+            3,
+          ),
         ).toLocaleString('en-US', { minimumFractionDigits: 3 })}`}
         unit={`${textAreaFields.selectedToken.symbol}`}
       />
@@ -136,7 +144,7 @@ export default function Approve(props: ApproveProps) {
         fontSize={14}
         lineHeight={'20px'}
         Fcolor={'rgba(255, 255, 255, 0.88)'}
-        className={'margin0 marginB12'}
+        className={'marginB12'}
       />
       <FormControl component="fieldset" className={'marginB64'}>
         <RadioGroup
@@ -176,7 +184,7 @@ export default function Approve(props: ApproveProps) {
           {amountRadio === 'fullTokenBal' ? amountToApprove : ''}{' '}
         </FormHelperText>
       </FormControl>
-      {textAreaFields.inSufficinetBal ? (
+      {textAreaFields.inSufficientBal ? (
         <ErrorAlert>
           <img src={ErrorIcon} alt={'ErrorIcon'} className={'marginR12'} />
           <div>
@@ -186,7 +194,7 @@ export default function Approve(props: ApproveProps) {
               fontSize={12}
               lineHeight={'130%'}
               Fcolor={'#FA4C69'}
-              className={'margin0'}
+              className={''}
             />
           </div>
         </ErrorAlert>
@@ -219,7 +227,7 @@ export default function Approve(props: ApproveProps) {
 
 const ErrorAlert = styled.div`
   padding: 8px;
-  background: rgba(255, 255, 255, 0.08);
+  background: #4b4443;
   border-radius: 4px;
   display: flex;
   justify-content: flex-start;
