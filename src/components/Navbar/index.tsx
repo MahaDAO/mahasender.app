@@ -11,6 +11,7 @@ import Button from '../Button'
 import AccountButton from './components/AccountButton'
 import IconLoader from '../IconLoader'
 import MobileNav from './components/MobileNav'
+import TxModal from './components/modal/Transaction/TxModal'
 
 export default function Navbar() {
   const { account, connect, reset } = useWallet()
@@ -23,6 +24,10 @@ export default function Navbar() {
 
   return (
     <TopBarContainer>
+      <TxModal
+        openModal={showTxModal}
+        onDismiss={() => setShowTxModal(false)}
+      />
       {/* <AlertSnackbar
         open={showWarning}
         title={'Wrong Network!'}

@@ -110,6 +110,10 @@ const GlobalStyles = createGlobalStyle`
     margin-top: 24px;
   }
 
+  .marginT40{
+    margin-top: 40px;
+  }
+
   .marginTB2{
     margin: 2px 0;
   }
@@ -152,6 +156,10 @@ const GlobalStyles = createGlobalStyle`
 
   .marginR4{
     margin-right: 4px;
+  }
+
+  .marginR8{
+    margin-right: 8px;
   }
 
   .marginR12{

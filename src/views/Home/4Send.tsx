@@ -6,6 +6,9 @@ import Button from '../../components/Button'
 import WhiteSquare from '../../assets/icons/checkbox/WhiteSquare.svg'
 import Cross from '../../assets/icons/misc/Cross.svg'
 import GreenOutline from '../../assets/icons/checkbox/GreenOutline.svg'
+import { useAllTransactions } from '../../state/transactions/hooks'
+import { truncateMiddle } from '../../utils'
+import IconLoader from '../../components/IconLoader'
 interface SendProps {
   txHashes: string[]
   handleBack: () => void
@@ -13,11 +16,13 @@ interface SendProps {
 
 export default function Send(props: SendProps) {
   const { handleBack, txHashes } = props
+  const allTransactions = useAllTransactions()
 
   const [txConfirmed, setTxConfirmed] = useState<boolean>(true)
   const [txMined, setTxMined] = useState(false)
 
   console.log('HERE', txHashes)
+  console.log('Object.keys(allTransactions)', Object.keys(allTransactions))
   return (
     <section>
       {txMined ? (
@@ -63,60 +68,72 @@ export default function Send(props: SendProps) {
             lineHeight={'20px'}
             Fcolor={'rgba(255, 255, 255, 0.88)'}
           />
-          <TxnHashDiv>
-            <div>
-              <TextWrapper
-                text={'1. 0x7a...51f16'}
-                fontWeight={300}
-                fontSize={14}
-                lineHeight={'130%'}
-                className={'margin0'}
-              />
-            </div>
-            <div>
-              <img src={GreenOutline} alt={'GreenCheck'} />
-              {/* <TextWrapper
-                text={'loader'}
-                fontWeight={300}
-                fontSize={14}
-                lineHeight={'130%'}
-                className={'margin0'}
-              /> */}
-            </div>
-          </TxnHashDiv>
-          <TxnHashDiv style={{ marginBottom: '40px' }}>
-            <div>
-              <TextWrapper
-                text={'1. 0x7a...51f16'}
-                fontWeight={300}
-                fontSize={14}
-                lineHeight={'130%'}
-                className={'margin0'}
-              />
-            </div>
-            <div>
-              <TextWrapper
-                text={'loader'}
-                fontWeight={300}
-                fontSize={14}
-                lineHeight={'130%'}
-                className={'margin0'}
-              />
-            </div>
-          </TxnHashDiv>
+
+          {Object.keys(allTransactions)?.map((key: any, i: number) => {
+            const summary = allTransactions[key].summary
+            const pending = !allTransactions[key].receipt
+            const success =
+              !pending &&
+              allTransactions[key] &&
+              (allTransactions[key].receipt?.status === 1 ||
+                typeof allTransactions[key].receipt?.status === 'undefined')
+
+            console.log('pending', pending, 'success', success)
+
+            return (
+              <TxnHashDiv>
+                <div>
+                  <TextWrapper
+                    text={`${truncateMiddle(
+                      allTransactions[key].hash,
+                      12,
+                      '...',
+                    )}`}
+                    fontWeight={300}
+                    fontSize={14}
+                    lineHeight={'130%'}
+                    className={'margin0'}
+                  />
+                </div>
+
+                <IconWrapper pending={pending} success={success}>
+                  {pending ? (
+                    <IconLoader
+                      iconName={'ColoredPending'}
+                      iconType={'status'}
+                    />
+                  ) : success ? (
+                    <IconLoader
+                      iconName={'ColoredSuccess'}
+                      iconType={'status'}
+                    />
+                  ) : (
+                    <IconLoader iconName={'ColoredAlert'} iconType={'status'} />
+                  )}
+                </IconWrapper>
+              </TxnHashDiv>
+            )
+          })}
         </div>
       )}
 
-      <Button
-        text={'Back'}
-        variant={'outlined'}
-        onClick={() => {
-          handleBack()
-        }}
-      />
+      <div className={'marginT40'}>
+        <Button
+          text={'Back'}
+          variant={'outlined'}
+          onClick={() => {
+            handleBack()
+          }}
+        />
+      </div>
     </section>
   )
 }
+
+const IconWrapper = styled.div<{ pending: boolean; success?: boolean }>`
+  color: ${({ pending, success }) =>
+    pending ? '#D74D26' : success ? '#178A50' : '#BA1E38'};
+`
 
 const TxnHashDiv = styled.div`
   padding: 12px;

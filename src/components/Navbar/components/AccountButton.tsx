@@ -120,7 +120,7 @@ const AccountButton: React.FC<AccountButtonProps> = ({
               iconName={'Wallet'}
               width={24}
               height={24}
-              className="m-r-8"
+              className="marginR8"
             />
           </Button>
         )}
