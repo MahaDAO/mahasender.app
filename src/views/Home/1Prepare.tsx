@@ -20,6 +20,7 @@ import { Contract, ethers } from 'ethers'
 import * as _ from 'underscore'
 import useStateWithCallback from 'use-state-with-callback'
 import { useWallet } from 'use-wallet'
+import CsvDownloader from 'react-csv-downloader'
 
 import useCore from '../../hooks/useCore'
 import TextWrapper from '../../components/TextWrapper'
@@ -31,6 +32,7 @@ import AccountButton from '../../components/TopBar/components/AccountButton'
 import ERC20 from '../../protocol/ERC20'
 import ABIS from '../../protocol/deployments/abi'
 import IconLoader from '../../components/IconLoader'
+// import SampleMahasender from '../../assets/temp/SampleMahasender.csv'
 interface PrepareProps {
   handleNext: (adrs: []) => void
   selectedTokenFn: (token: any) => void
@@ -110,7 +112,7 @@ function Prepare(props: PrepareProps) {
     'Insert Manually',
   )
   const [inputTokenValue, setInputTokenValue] = useState('')
-  const [lineNumbers, setLineNumbers] = useState<number[]>([1])
+  const [lineNumbers, setLineNumbers] = useState<number[]>([])
   const [selectedToken, setSelectedToken] = useState<any>(storedSelectedToken)
 
   useEffect(() => {
@@ -121,6 +123,19 @@ function Prepare(props: PrepareProps) {
     })
     setEnteredAdrs(list.join('\n'))
     setEnteredAdrsFn(list.join('\n'))
+
+    console.log('while useeffect')
+
+    console.log('listOfAddresses.length', listOfAddresses.length)
+
+    if (listOfAddresses.length > 0) {
+      setLineNumbers([])
+      for (let i = 1; i <= listOfAddresses.length; i++) {
+        console.log('i', i)
+        console.log('lineNumbers', lineNumbers)
+        setLineNumbers((oldArray) => [...oldArray, i])
+      }
+    }
   }, [listOfAddresses])
 
   useEffect(() => {
@@ -255,7 +270,7 @@ function Prepare(props: PrepareProps) {
     return filtered
   }
 
-  console.log('selectedToken', selectedToken)
+  console.log('lineNumbers', lineNumbers)
 
   console.log('listOfAddresses', listOfAddresses)
 
@@ -286,27 +301,8 @@ function Prepare(props: PrepareProps) {
           <Autocomplete
             value={selectedToken}
             onChange={async (e, token) => {
-              console.log('token', token)
               setSelectedToken(token)
-              // if (token && ethers.utils.isAddress(token.address)) {
-              //   console.log('Here', token)
-              //   const contractOfToken = await new Contract(
-              //     token.address,
-              //     ABIS['IERC20'],
-              //     core.provider,
-              //   )
-              //   console.log('contractOfToken', contractOfToken)
-              //   const decimal = await contractOfToken?.decimals()
-              //   const symbol = await contractOfToken?.symbol()
-              //   console.log('symbol', symbol)
-              //   setSelectedToken(
-              //     new ERC20(token.address, core.provider, symbol, decimal),
-              //   )
-              // }
             }}
-            // filterOptions={(options, params) => {
-            //   return filterTokenHandler(options, params)
-            // }}
             id="combo-box-demo"
             options={listOfTokens}
             getOptionLabel={(option: any) => {
@@ -338,9 +334,6 @@ function Prepare(props: PrepareProps) {
             <OutlinedInput
               id="outlined-adornment-weight"
               value={selectedToken?.decimal || 0}
-              // onChange={(e) => {
-              //   setDeciamText(e.target.value)
-              // }}
               aria-describedby="outlined-weight-helper-text"
               inputProps={{
                 'aria-label': 'weight',
@@ -376,29 +369,6 @@ function Prepare(props: PrepareProps) {
               <MenuItem value={'Upload File'}>Upload File</MenuItem>
             </Select>
           </FormControl>
-          {/* <Autocomplete
-            id="combo-box-demo"
-            options={InputOption}
-            value={addAdrsDropdown}
-            onChange={(event: any, newValue: string | null) => {
-              setaddAdrsDropdown(newValue)
-            }}
-            inputValue={inputTokenValue}
-            onInputChange={(event, newInputValue) => {
-              setInputTokenValue(newInputValue)
-            }}
-            getOptionLabel={(option: any) => option}
-            style={{ width: '100%', color: '#fff' }}
-            renderInput={(params: any) => (
-              <TextField
-                {...params}
-                label=""
-                variant="outlined"
-                placeholder={'Select'}
-                style={{ color: '#fff' }}
-              />
-            )}
-          /> */}
         </div>
       </div>
 
@@ -410,7 +380,7 @@ function Prepare(props: PrepareProps) {
         ) : (
           <div style={{ display: 'flex' }}>
             <div style={{ marginRight: '10px' }}>
-              {lineNumbers.map((item: any, i: number) => (
+              {lineNumbers?.map((item: any, i: number) => (
                 <TextWrapper
                   key={i}
                   text={`${item}`}
@@ -431,6 +401,7 @@ function Prepare(props: PrepareProps) {
               }}
               onBlur={handleManualData}
               onKeyDown={handleKeyDown}
+              // onPaste={handleManualData}
             />
           </div>
         )}
@@ -443,7 +414,22 @@ function Prepare(props: PrepareProps) {
           lineHeight={'140%'}
           Fcolor={'rgba(255, 255, 255, 0.88)'}
         />
-        <div className={'flex_row_start_center pointer'}>
+
+        <CsvDownloader
+          filename="sample_mahasender"
+          extension=".csv"
+          datas={[
+            {
+              addresses: '0x3bd31a863a799cf0ef9f6d678a8c39a1f8af0a9b',
+              values: '4',
+            },
+            {
+              addresses: '0x99898f3fd648b42ed2ab48a7dd556cbf7b15ef93',
+              values: '2',
+            },
+          ]}
+          className={'flex_row_start_center pointer'}
+        >
           <TextWrapper
             text={'Sample file'}
             fontWeight={300}
@@ -457,7 +443,7 @@ function Prepare(props: PrepareProps) {
             iconType={'misc'}
             className="m-r-8"
           />
-        </div>
+        </CsvDownloader>
       </div>
 
       {addressError.length ? (
