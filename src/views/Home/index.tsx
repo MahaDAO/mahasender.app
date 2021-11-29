@@ -156,15 +156,15 @@ export default function Home() {
         </div>
       ) : (
         <div>
-          {/* <img
-          src={HeadingBgDesign}
-          alt={'HeadingBgDesign'}
-          style={{
-            width: '-webkit-fill-available',
-            position: 'absolute',
-            top: '-40px',
-          }}
-        /> */}
+          <img
+            src={HeadingBgDesign}
+            alt={'HeadingBgDesign'}
+            style={{
+              width: '-webkit-fill-available',
+              position: 'absolute',
+              top: '-40px',
+            }}
+          />
 
           <HeadingContainer>
             <TextWrapper
@@ -329,7 +329,7 @@ export default function Home() {
 }
 
 const HeadingContainer = styled.div`
-  margin: 100px 290px 124px 290px;
+  margin: 150px 290px 124px 290px;
 `
 
 const StepCard = styled.div`

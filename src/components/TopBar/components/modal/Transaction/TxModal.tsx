@@ -1,59 +1,58 @@
-import styled from 'styled-components'
-import React, { useMemo, useState } from 'react'
-import { useWallet } from 'use-wallet'
-import { Link } from 'react-router-dom'
-import IconButton from '@material-ui/core/IconButton'
+import styled from 'styled-components';
+import React, { useMemo, useState } from 'react';
+import { useWallet } from 'use-wallet';
+import { Link } from 'react-router-dom';
+import IconButton from '@material-ui/core/IconButton';
 
-import IconLoader from '../../../../IconLoader'
-import SingleTransaction from './SingleTransaction'
+import IconLoader from '../../../../IconLoader';
+import SingleTransaction from './SingleTransaction';
+import ConfirmationModal from "../../../../ConfirmationModal";
 
 import {
   isTransactionRecent,
   useAllTransactions,
   useClearAllTransactions,
-} from '../../../../../state/transactions/hooks'
-import { TransactionDetails } from '../../../../../utils/interface'
-import ConfirmationModal from '../../../../ConfirmationModal'
+} from '../../../../../state/transactions/hooks';
+import { TransactionDetails } from '../../../../../utils/interface';
 
 interface props {
-  openModal: boolean
-  onDismiss: () => void
+  openModal: boolean;
+  onDismiss: () => void;
 }
 
+// We want the latest one to come first, so return negative if a is after b
+function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
+  return b.addedTime - a.addedTime;
+};
+
 const TxModal: React.FC<props> = ({ openModal, onDismiss }) => {
-  const { account } = useWallet()
+  const { account } = useWallet();
 
-  const allTransactions = useAllTransactions()
-  const { clearAllTransactions } = useClearAllTransactions()
+  const allTransactions = useAllTransactions();
+  const { clearAllTransactions } = useClearAllTransactions();
 
-  const [openConfirmationModal, setOpenConfirmationModal] = useState<boolean>(
-    false,
-  )
-
-  console.log('allTransactions', allTransactions)
+  const [openConfirmationModal, setOpenConfirmationModal] = useState<boolean>(false);
 
   const sortedRecentTransactions = useMemo(() => {
-    const txs = Object.values(allTransactions)
-    return txs
-      .filter((tx) => isTransactionRecent(tx) && tx.from === account)
-      .sort(newTransactionsFirst)
-  }, [allTransactions, account])
+    const txs = Object.values(allTransactions);
+    return txs.filter((tx) => isTransactionRecent(tx) && tx.from === account).sort(newTransactionsFirst);
+  }, [allTransactions, account]);
 
   const handleClose = () => {
-    onDismiss()
-  }
+    onDismiss();
+  };
 
-  if (!openModal) return null
+  if (!openModal) return null;
 
   return (
     <MainDiv>
       <ConfirmationModal
         modalOpen={openConfirmationModal}
         onClose={() => setOpenConfirmationModal(false)}
-        modalTitle={'Clear all transaction'}
-        title={'Are you sure u want to clear all transaction?'}
-        yesText={'Yes'}
-        noText={'No'}
+        modalTitle={"Clear all transaction"}
+        title={"Are you sure you want to clear all transaction?"}
+        yesText={"Yes"}
+        noText={"No"}
         yesAction={() => {
           setOpenConfirmationModal(false)
           clearAllTransactions()
@@ -67,9 +66,7 @@ const TxModal: React.FC<props> = ({ openModal, onDismiss }) => {
             <Title>Recent Transactions</Title>
             <RightSubHeader>
               {sortedRecentTransactions.length > 0 && (
-                <ClearAll onClick={() => setOpenConfirmationModal(true)}>
-                  Clear all
-                </ClearAll>
+                <ClearAll onClick={() => setOpenConfirmationModal(true)}>Clear all</ClearAll>
               )}
               <CrossIcon>
                 <IconButton aria-label="close" onClick={() => handleClose()}>
@@ -81,12 +78,8 @@ const TxModal: React.FC<props> = ({ openModal, onDismiss }) => {
           <ModalBody>
             {sortedRecentTransactions.length === 0 && (
               <div>
-                <NoTransaction>
-                  You haven’t done any transaction yet.
-                </NoTransaction>
-                <CallToAction to={'/locker'} onClick={() => handleClose()}>
-                  Go to Locker
-                </CallToAction>
+                <NoTransaction>You haven’t done any transaction yet.</NoTransaction>
+                <CallToAction to={'/dashboard'} onClick={() => handleClose()}>Go to Dashboard</CallToAction>
               </div>
             )}
             <StyledTransactionList>
@@ -98,8 +91,8 @@ const TxModal: React.FC<props> = ({ openModal, onDismiss }) => {
         </WalletDiv>
       </PositionDiv>
     </MainDiv>
-  )
-}
+  );
+};
 
 const BackgroundAbsolute = styled.div`
   position: absolute;
@@ -109,7 +102,7 @@ const BackgroundAbsolute = styled.div`
   width: 100vw;
   height: 100vh;
   z-index: 1;
-`
+`;
 
 const MainDiv = styled.div`
   position: absolute;
@@ -118,7 +111,7 @@ const MainDiv = styled.div`
   background: transparent;
   width: 100vw;
   height: 100vh;
-`
+`;
 
 const PositionDiv = styled.div`
   box-sizing: border-box;
@@ -126,12 +119,12 @@ const PositionDiv = styled.div`
   padding: 0 24px;
   width: 100%;
   position: relative;
-`
+`;
 
 const WalletDiv = styled.div`
   position: absolute;
   background: linear-gradient(180deg, #48423e 0%, #373030 100%);
-  border-radius: 12px;
+  border-radius: 6px;
   right: 60px;
   top: 72px;
   width: 380px;
@@ -142,7 +135,7 @@ const WalletDiv = styled.div`
     left: 0;
     right: 0;
   }
-`
+`;
 
 const ModalHeader = styled.div`
   margin: 12px 24px 0 24px;
@@ -151,22 +144,22 @@ const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 
 const Title = styled.p`
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
   line-height: 24px;
-  color: #ffffff;
+  color: #FFFFFF;
   margin-bottom: 0;
-`
+`;
 
 const RightSubHeader = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-`
+`;
 
 const ClearAll = styled.p`
   font-style: normal;
@@ -176,11 +169,11 @@ const ClearAll = styled.p`
   color: rgba(255, 255, 255, 0.32);
   cursor: pointer;
   margin-bottom: 0;
-`
+`;
 
 const CrossIcon = styled.div`
   margin-right: -12px;
-`
+`;
 
 const ModalBody = styled.div`
   padding: 24px;
@@ -189,7 +182,7 @@ const ModalBody = styled.div`
   @media (max-width: 600px) {
     max-height: calc(100vh - 114px);
   }
-`
+`;
 
 const NoTransaction = styled.p`
   font-style: normal;
@@ -200,30 +193,25 @@ const NoTransaction = styled.p`
   margin-bottom: 8px;
   padding: 0 12px;
   text-align: center;
-`
+`;
 
 const CallToAction = styled(Link)`
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
   line-height: 150%;
-  color: #f7653b;
+  color: #F7653B;
   text-align: center;
   width: 100%;
   display: block;
   &:hover {
-    color: #f7653b;
+    color: #F7653B;
   }
-`
+`;
 
 const StyledTransactionList = styled.div`
   display: flex;
   flex-direction: column;
-`
+`;
 
-// we want the latest one to come first, so return negative if a is after b
-function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
-  return b.addedTime - a.addedTime
-}
-
-export default TxModal
+export default TxModal;

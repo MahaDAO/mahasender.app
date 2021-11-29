@@ -27,7 +27,7 @@ import SelectOption from '../../components/SelectOptiion'
 import UploadIcon from '../../assets/icons/misc/UploadIcon.svg'
 import Button from '../../components/Button'
 import ImportCSV from '../../components/ImportCSV'
-import AccountButton from '../../components/Navbar/components/AccountButton'
+import AccountButton from '../../components/TopBar/components/AccountButton'
 import ERC20 from '../../protocol/ERC20'
 import ABIS from '../../protocol/deployments/abi'
 import IconLoader from '../../components/IconLoader'
@@ -443,7 +443,7 @@ function Prepare(props: PrepareProps) {
           lineHeight={'140%'}
           Fcolor={'rgba(255, 255, 255, 0.88)'}
         />
-        <div className={'flex_row_center_start pointer'}>
+        <div className={'flex_row_start_center pointer'}>
           <TextWrapper
             text={'Sample file'}
             fontWeight={300}

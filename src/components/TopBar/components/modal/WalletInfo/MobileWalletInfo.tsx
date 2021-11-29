@@ -1,7 +1,7 @@
 import React from "react";
 
+import Modal from "../../../../CustomModal";
 import WalletInfo from "./index";
-import Modal from "../../../../Modal";
 
 interface MobileWalletInfoProps {
   modalOpen: boolean;

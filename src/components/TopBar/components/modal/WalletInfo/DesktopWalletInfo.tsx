@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import WalletInfo from "./index";
+import { BackgroundAbsolute } from "../../../../Selector";
 
 interface DesktopWalletInfoProps {
   modalOpen: boolean;
@@ -11,6 +12,7 @@ interface DesktopWalletInfoProps {
 const DesktopWalletInfo = (props: DesktopWalletInfoProps) => {
   const {
     modalOpen,
+    onClose,
   } = props;
 
   if (!modalOpen) {

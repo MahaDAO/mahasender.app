@@ -2,11 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { format } from 'timeago.js';
 
+import IconLoader from '../../../../IconLoader';
 
 import config from '../../../../../config';
-import IconLoader from "../../../../IconLoader";
-
-import { TransactionDetails } from "../../../../../utils/interface";
+import { TransactionDetails } from '../../../../../utils/interface';
 
 const TransactionWrapper = styled.div`
   display: flex;

@@ -77,7 +77,7 @@ const ImportCSV = (props: Iprops) => {
     <>
       <div
         onClick={() => handleClick()}
-        className="flex_row_center_start pointer"
+        className="flex_row_start_center pointer"
       >
         {content ? (
           content()

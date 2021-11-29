@@ -1,28 +1,33 @@
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useWallet } from 'use-wallet'
 import copyText from 'copy-to-clipboard'
 import Loader from 'react-spinners/BeatLoader'
-import React, { useEffect, useState } from 'react'
 
 import TextWrapper from '../../../../TextWrapper'
-import Button from '../../../../Button'
-import theme from '../../../../../theme'
-import IconLoader from '../../../../IconLoader'
-import ConfirmationModal from '../../../../ConfirmationModal'
-
 import { truncateMiddle } from '../../../../../utils'
-import useBalance from '../../../../../hooks/useBalance'
-import MetamaskImg from '../../../../../assets/images/Metamask.svg'
 import { getDisplayBalance } from '../../../../../utils/formatBalance'
+
+import MetamaskImg from '../../../../../assets/images/Metamask.svg'
+import IconLoader from '../../../../IconLoader'
+import theme from '../../../../../theme'
+import Button from '../../../../Button'
+import ConfirmationModal from '../../../../ConfirmationModal'
+import useTokenBalanceOf from '../../../../../hooks/useTokenBalanceOf'
+import useCore from '../../../../../hooks/useCore'
+// import DataField from "../../../../DataField";
+import ChooseWallet from './ChooseWallet'
+import Grid from '@material-ui/core/Grid'
 
 const WalletInfo = () => {
   const [isCopied, setIsCopied] = useState<boolean>(false)
+  const [showWalletOption, setShowWalletOption] = useState<boolean>(false)
   const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(
     false,
   )
 
+  const core = useCore()
   const { account } = useWallet()
-  const bnbBalance = useBalance()
 
   useEffect(() => {
     if (isCopied) {
@@ -38,6 +43,10 @@ const WalletInfo = () => {
 
   return (
     <MainContainer>
+      <ChooseWallet
+        openModal={showWalletOption}
+        onClose={() => setShowWalletOption(false)}
+      />
       <ConfirmationModal
         modalOpen={showConfirmationModal}
         onClose={() => setShowConfirmationModal(false)}
@@ -56,15 +65,20 @@ const WalletInfo = () => {
         }}
         noAction={() => setShowConfirmationModal(false)}
       />
-      <WalletHeader className="single-line-center-between bottom-divider">
+      <WalletHeader className="row_spaceBetween_center bottom-divider">
         <TextWrapper text={'Your Account'} fontWeight={600} fontSize={16} />
-        <div className="single-line-center-start">
-          <img src={MetamaskImg} height={32} className="m-r-8" alt="metamask" />
+        <div className="flex_row_start_center">
+          <img
+            src={MetamaskImg}
+            height={32}
+            className="marginR8"
+            alt="metamask"
+          />
           <TextWrapper
             text={`${truncateMiddle(account || '', 12, '...')}`}
             fontWeight={600}
             fontSize={16}
-            className="m-r-8"
+            className="marginR8"
           />
           {isCopied ? (
             <IconLoader iconName={'Copied'} />
@@ -81,25 +95,25 @@ const WalletInfo = () => {
         </div>
       </WalletHeader>
       <WalletBody>
-        <div className="single-line-center-between m-b-20">
-          <div className="single-line-center-start">
+        <div className="row_spaceBetween_center marginB20">
+          <div className="flex_row_start_center">
             <IconLoader
-              iconName={'BNB'}
+              iconName={'MAHA'}
               iconType="tokenSymbol"
-              className="m-r-12"
+              className="marginR12"
               height={44}
               width={44}
             />
-            {bnbBalance.isLoading ? (
-              <Loader color={'#ffffff'} loading={true} size={8} margin={2} />
-            ) : (
-              <TextWrapper
-                text={`${Number(
-                  getDisplayBalance(bnbBalance.value, 18, 3),
-                ).toLocaleString('en-US', { maximumFractionDigits: 2 })} BNB`}
-                fontWeight={600}
-              />
-            )}
+            {/*{
+              isMAHABalanceLoading
+                ? <Loader color={'#ffffff'} loading={true} size={8} margin={2} />
+                : <TextWrapper
+                  text={
+                    `${Number(getDisplayBalance(mahaBalance, 18, 3)).toLocaleString()} MAHA`
+                  }
+                  fontWeight={600}
+                />
+            }*/}
           </div>
           <TextWrapper
             text={''}
@@ -107,12 +121,21 @@ const WalletInfo = () => {
             Fcolor={theme.color.transparent[100]}
           />
         </div>
-        <Button
-          variant={'transparent'}
-          onClick={() => setShowConfirmationModal(true)}
-        >
-          Disconnect
-        </Button>
+        <Grid container spacing={1}>
+          <Grid item lg={6} md={6} sm={12} xs={12}>
+            <Button
+              variant={'transparent'}
+              onClick={() => setShowWalletOption(true)}
+            >
+              Change
+            </Button>
+          </Grid>
+          <Grid item lg={6} md={6} sm={12} xs={12}>
+            <Button onClick={() => setShowConfirmationModal(true)}>
+              Disconnect
+            </Button>
+          </Grid>
+        </Grid>
       </WalletBody>
     </MainContainer>
   )
@@ -128,6 +151,9 @@ const WalletHeader = styled.div`
   padding-bottom: 16px;
 `
 
-const WalletBody = styled.div`
-  padding: 24px 0 0 0;
+const WalletBody = styled.div``
+
+const MAHAXContain = styled.div`
+  padding: 24px 0;
+  margin-bottom: 12px;
 `

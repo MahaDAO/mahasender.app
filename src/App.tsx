@@ -14,7 +14,7 @@ import store from './state'
 import Updaters from './state/Updaters'
 import ProtocolProvider from './context/Provider'
 import ModalsProvider from './context/Modals'
-import Navbar from './components/Navbar'
+import TopBar from './components/TopBar'
 import config from './config'
 import Home from './views/Home'
 import NoMetamaskNotice from './components/NoMetamaskNotice'
@@ -22,10 +22,27 @@ import Popups from './components/Popups'
 import useCore from './hooks/useCore'
 
 const Providers: React.FC = ({ children }) => {
+  console.log('body', {
+    injected: {
+      chainId: [config.chainId],
+    },
+    walletconnect: {
+      chainId: config.chainId,
+      rpcUrl: config.defaultProvider,
+    },
+  })
+
   return (
     <UseWalletProvider
-      connectors={{ injected: {} }}
-      // connectors={{ injected: { chainId: [4] } }}
+      connectors={{
+        injected: {
+          chainId: [config.chainId],
+        },
+        walletconnect: {
+          chainId: config.chainId,
+          rpcUrl: config.defaultProvider,
+        },
+      }}
     >
       <Provider store={store}>
         <Updaters />
@@ -67,7 +84,7 @@ const App: React.FC = () => {
   return (
     <Providers>
       <Router>
-        <Navbar />
+        <TopBar />
         <div>
           <Home />
         </div>

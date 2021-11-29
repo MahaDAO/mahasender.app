@@ -1,14 +1,20 @@
-import React from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import { useTheme } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import { createStyles, makeStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
+import React from 'react'
+import Dialog from '@material-ui/core/Dialog'
+import { useTheme } from '@material-ui/core/styles'
+import IconButton from '@material-ui/core/IconButton'
+import MuiDialogTitle from '@material-ui/core/DialogTitle'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
+import MuiDialogContent from '@material-ui/core/DialogContent'
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  withStyles,
+  WithStyles,
+} from '@material-ui/core/styles'
 
-import IconLoader from "../IconLoader";
-import TextWrapper from '../TextWrapper';
+import IconLoader from '../IconLoader'
+import TextWrapper from '../TextWrapper'
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -22,42 +28,55 @@ const styles = (theme: Theme) =>
     closeButton: {
       position: 'absolute',
       right: '20px',
-      top: "16px",
+      top: '16px',
       color: theme.palette.grey[500],
     },
-
-  });
+  })
 
 export interface DialogTitleProps extends WithStyles<typeof styles> {
-  id: string;
-  titleLogo?: React.ReactNode;
-  children: React.ReactNode;
-  onClose: () => void;
-  modalTitleStyle?: any;
-  closeButton?: boolean;
-  title: string;
+  id: string
+  titleLogo?: React.ReactNode
+  children: React.ReactNode
+  onClose: () => void
+  modalTitleStyle?: any
+  closeButton?: boolean
+  title: string
 }
 
 const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
-  const { children, classes, onClose, titleLogo, modalTitleStyle, closeButton, title, ...other } = props;
+  const {
+    children,
+    classes,
+    onClose,
+    titleLogo,
+    modalTitleStyle,
+    closeButton,
+    title,
+    ...other
+  } = props
   return (
-    <MuiDialogTitle style={modalTitleStyle} disableTypography className={classes.root} {...other}>
+    <MuiDialogTitle
+      style={modalTitleStyle}
+      disableTypography
+      className={classes.root}
+      {...other}
+    >
       <div className="dialog-class width-100">
         {titleLogo && titleLogo}
-        <TextWrapper
-          text={title}
-          fontSize={18}
-          fontWeight={600}
-        />
+        <TextWrapper text={title} fontSize={18} fontWeight={600} />
       </div>
       {closeButton ? (
-        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={onClose}
+        >
           <IconLoader iconName={'Cross'} iconType="misc" />
         </IconButton>
       ) : null}
     </MuiDialogTitle>
-  );
-});
+  )
+})
 
 const DialogContent = withStyles(() => ({
   root: {
@@ -77,19 +96,19 @@ const DialogContent = withStyles(() => ({
       padding: '24px 16px',
     },
   },
-}))(MuiDialogContent);
+}))(MuiDialogContent)
 
 interface props {
-  children: React.ReactNode;
-  title?: string;
-  handleClose?: Function;
-  open?: boolean;
-  titleLogo?: React.ReactNode;
-  modalContainerStyle?: any;
-  modalTitleStyle?: any;
-  modalBodyStyle?: any;
-  closeButton?: boolean;
-  mobile?: boolean;
+  children: React.ReactNode
+  title?: string
+  handleClose?: Function
+  open?: boolean
+  titleLogo?: React.ReactNode
+  modalContainerStyle?: any
+  modalTitleStyle?: any
+  modalBodyStyle?: any
+  closeButton?: boolean
+  mobile?: boolean
 }
 
 const useStyles = makeStyles({
@@ -99,12 +118,8 @@ const useStyles = makeStyles({
     borderRadius: '6px !important',
     maxWidth: '496px',
   },
-  halfScreen: {
-
-  },
-  customPaper: {
-
-  },
+  halfScreen: {},
+  customPaper: {},
 
   '@media (max-width: 600px)': {
     root: {
@@ -115,13 +130,13 @@ const useStyles = makeStyles({
       height: 'auto',
       maxHeight: 'calc(100vh - 72px)',
       width: '100%',
-      borderRadius: '6px 6px 0px 0px !important'
+      borderRadius: '6px 6px 0px 0px !important',
     },
     customPaper: {
       alignItems: 'flex-end',
     },
   },
-});
+})
 
 const Modal: React.FC<props> = ({
   children,
@@ -135,23 +150,23 @@ const Modal: React.FC<props> = ({
   closeButton,
   mobile = false,
 }) => {
-  const [openModal, setOpen] = React.useState(open);
+  const [openModal, setOpen] = React.useState(open)
 
-  const theme = useTheme();
-  const modalStyles = useStyles();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const theme = useTheme()
+  const modalStyles = useStyles()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   const handleCloseModal = () => {
     if (handleClose) {
-      handleClose();
+      handleClose()
     }
-  };
-
-  if (open !== openModal) {
-    setOpen(open);
   }
 
-  let modalJsx = <div />;
+  if (open !== openModal) {
+    setOpen(open)
+  }
+
+  let modalJsx = <div />
   if (openModal) {
     modalJsx = (
       <Dialog
@@ -161,42 +176,46 @@ const Modal: React.FC<props> = ({
         onClose={handleCloseModal}
         aria-labelledby="customized-dialog-title"
         open={openModal}
-        onBackdropClick={handleCloseModal}
+        // onBackdropClick={handleCloseModal}
         classes={{
           paper: modalStyles.root,
           paperFullScreen: modalStyles.halfScreen,
           scrollPaper: modalStyles.customPaper,
         }}
       >
-        {title && <DialogTitle
-          closeButton={closeButton}
-          modalTitleStyle={{
-            display: 'flex',
-            color: 'rgba(255, 255, 255, 0.88)',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '28px ',
-            borderBottom: '1px solid #ffffff08',
-            ...modalTitleStyle
+        {title && (
+          <DialogTitle
+            closeButton={closeButton}
+            modalTitleStyle={{
+              display: 'flex',
+              color: 'rgba(255, 255, 255, 0.88)',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '28px ',
+              borderBottom: '1px solid #ffffff08',
+              ...modalTitleStyle,
+            }}
+            id="customized-dialog-title"
+            onClose={handleCloseModal}
+            titleLogo={titleLogo}
+            title={title}
+          >
+            {title}
+          </DialogTitle>
+        )}
+        <DialogContent
+          style={{
+            ...modalBodyStyle,
           }}
-          id='customized-dialog-title'
-          onClose={handleCloseModal}
-          titleLogo={titleLogo}
-          title={title}
+          dividers
         >
-          {title}
-        </DialogTitle>}
-        <DialogContent style={{
-          ...modalBodyStyle
-        }} dividers>
           <div style={{}}>{children}</div>
         </DialogContent>
       </Dialog>
-    );
+    )
   }
 
-  return modalJsx;
-};
+  return modalJsx
+}
 
-
-export default Modal;
+export default Modal
