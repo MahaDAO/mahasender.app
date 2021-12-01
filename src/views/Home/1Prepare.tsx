@@ -32,6 +32,7 @@ import AccountButton from '../../components/TopBar/components/AccountButton'
 import ERC20 from '../../protocol/ERC20'
 import ABIS from '../../protocol/deployments/abi'
 import IconLoader from '../../components/IconLoader'
+import AlertSnackbar from '../../components/AlertSnackbar'
 // import SampleMahasender from '../../assets/temp/SampleMahasender.csv'
 interface PrepareProps {
   handleNext: (adrs: []) => void
@@ -88,7 +89,7 @@ function Prepare(props: PrepareProps) {
     setEnteredAdrsFn,
   } = props
 
-  const { account, connect } = useWallet()
+  const { account, connect, chainId } = useWallet()
   const core = useCore()
 
   const listOfTokens: ERC20[] = Object.keys(core.tokens).map((key) => {
@@ -121,6 +122,7 @@ function Prepare(props: PrepareProps) {
     }),
   )
   const [tokenInputValue, setTokenInputValue] = useState<string>('')
+  const [showWarning, setShowWarning] = useState<boolean>(false)
 
   const [open, toggleOpen] = useState(false)
 
@@ -296,6 +298,11 @@ function Prepare(props: PrepareProps) {
 
   return (
     <section>
+      <AlertSnackbar
+        open={showWarning}
+        title={'Wrong Network'}
+        subTitle={`You are not wrong network`}
+      />
       <div className={'row_spaceBetween_center marginB8'}>
         <div style={{ flex: 9, marginRight: '32px' }}>
           <TextWrapper
@@ -331,21 +338,40 @@ function Prepare(props: PrepareProps) {
                     core.provider,
                   )
 
-                  const decimal = await contractOfToken?.decimals()
-                  const symbol = await contractOfToken?.symbol()
-                  setSelectedToken(
-                    new ERC20(token.address, core.provider, symbol, decimal),
+                  console.log('contractOfToken', contractOfToken)
+                  console.log(
+                    'network',
+                    (await contractOfToken?.provider.getNetwork()).chainId,
+                    chainId,
                   )
-                  setTokenInputValue(`${symbol} - ${tokenInputValue}`)
-                  setStringTokens(
-                    _.uniq([
-                      ...stringTokens,
-                      { address: token.address, symbol, decimal },
-                    ]),
+                  console.log('token', token)
+                  console.log(
+                    'network',
+                    (await contractOfToken?.provider.getNetwork()).chainId !==
+                      chainId,
                   )
+                  if (
+                    (await contractOfToken?.provider.getNetwork()).chainId !==
+                    chainId
+                  ) {
+                    setShowWarning(true)
+                  } else {
+                    const decimal = await contractOfToken?.decimals()
+                    const symbol = await contractOfToken?.symbol()
+                    setSelectedToken(
+                      new ERC20(token.address, core.provider, symbol, decimal),
+                    )
+                    setTokenInputValue(`${symbol} - ${tokenInputValue}`)
+                    setStringTokens(
+                      _.uniq([
+                        ...stringTokens,
+                        { address: token.address, symbol, decimal },
+                      ]),
+                    )
+                  }
                 }
               } else {
-                setSelectedToken(token)
+                // setSelectedToken(token)
               }
             }}
             onInputChange={(e, val) => setTokenInputValue(val)}

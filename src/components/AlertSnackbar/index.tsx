@@ -1,55 +1,48 @@
-import styled from 'styled-components';
-import Slide from '@material-ui/core/Slide';
-import Snackbar from '@material-ui/core/Snackbar';
-import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { TransitionProps } from '@material-ui/core/transitions';
+import styled from 'styled-components'
+import Slide from '@material-ui/core/Slide'
+import Snackbar from '@material-ui/core/Snackbar'
+import React, { useEffect, useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { TransitionProps } from '@material-ui/core/transitions'
 
-import theme from '../../theme';
-import '../../customCss/Custom-Snackbar.css';
+import theme from '../../theme'
+import '../../customCss/Custom-Snackbar.css'
 
-import IconLoader from '../IconLoader';
-import TextWrapper from '../TextWrapper';
+import IconLoader from '../IconLoader'
+import TextWrapper from '../TextWrapper'
 
 const useStyles = makeStyles(() => ({
   root: {
     width: '100%',
-    '& > * + *': {
-    },
+    '& > * + *': {},
   },
-}));
+}))
 
 interface Iprops {
-  open: boolean;
-  handleCancel?: () => void;
-  title?: string;
-  subTitle?: string;
-  type?: 'alert' | 'warning' | 'default' | 'success';
+  open: boolean
+  handleCancel?: () => void
+  title?: string
+  subTitle?: string
+  type?: 'alert' | 'warning' | 'default' | 'success'
 }
 
 const AlertSnackbar = (props: Iprops) => {
-  const {
-    open,
-    handleCancel,
-    type = "default",
-    title,
-    subTitle
-  } = props;
+  const { open, handleCancel, type = 'default', title, subTitle } = props
 
-  const classes = useStyles();
-  const [openSnackbar, setOpen] = useState(open);
+  const classes = useStyles()
+  const [openSnackbar, setOpen] = useState(open)
 
   useEffect(() => {
     setOpen(open)
   }, [open])
 
   const handleClose = () => {
-    setOpen(false);
-    if (handleCancel) handleCancel();
-  };
+    setOpen(false)
+    if (handleCancel) handleCancel()
+  }
 
   function SlideTransition(props: TransitionProps) {
-    return <Slide {...props} direction="down" />;
+    return <Slide {...props} direction="down" />
   }
 
   const backgroundColour = () => {
@@ -65,52 +58,68 @@ const AlertSnackbar = (props: Iprops) => {
   const Icon = () => {
     if (type === 'alert') {
       return (
-        <IconLoader iconName={'Caution'} iconType={'status'} className='m-r-8' />
+        <IconLoader
+          iconName={'Caution'}
+          iconType={'status'}
+          className="marginR8"
+        />
       )
     } else if (type === 'success') {
       return (
-        <IconLoader iconName={'Success'} iconType={'status'} className='m-r-8' />
+        <IconLoader
+          iconName={'Success'}
+          iconType={'status'}
+          className="marginR8"
+        />
       )
     }
-    return <IconLoader iconName={'Caution'} iconType={'status'} className='m-r-8' />
+    return (
+      <IconLoader
+        iconName={'Caution'}
+        iconType={'status'}
+        className="marginR8"
+      />
+    )
   }
 
   return (
     <div className={classes.root}>
-      {openSnackbar && <Snackbar
-        open={openSnackbar}
-        autoHideDuration={5000}
-        TransitionComponent={SlideTransition}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <SnackBarParent style={backgroundColour()}>
-          <div className='single-line-center-start'>
-            <Icon />
-            <div>
-              {title && <TextWrapper
-                text={title}
-                fontWeight={600}
-                fontSize={16}
-                className="m-b-4"
-              />}
-              {subTitle && <TextWrapper
-                text={subTitle}
-                fontWeight={300}
-                fontSize={16}
-              />}
+      {openSnackbar && (
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={5000}
+          TransitionComponent={SlideTransition}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <SnackBarParent style={backgroundColour()}>
+            <div className="flex_row_start_center">
+              <Icon />
+              <div>
+                {title && (
+                  <TextWrapper
+                    text={title}
+                    fontWeight={600}
+                    fontSize={16}
+                    className="marginB4"
+                  />
+                )}
+                {subTitle && (
+                  <TextWrapper text={subTitle} fontWeight={300} fontSize={16} />
+                )}
+              </div>
             </div>
-          </div>
-          <IconLoader
-            iconName={'Cross'}
-            className='pointer'
-            onClick={handleClose}
-          />
-        </SnackBarParent>
-      </Snackbar>}
+            <IconLoader
+              iconName={'Cross'}
+              className="pointer"
+              onClick={handleClose}
+            />
+          </SnackBarParent>
+        </Snackbar>
+      )}
     </div>
-  );
-};
+  )
+}
 
 const SnackBarParent = styled.div`
   backdrop-filter: blur(70px);
@@ -131,6 +140,6 @@ const SnackBarParent = styled.div`
     width: max-content;
     min-width: auto;
   }
-`;
+`
 
-export default AlertSnackbar;
+export default AlertSnackbar

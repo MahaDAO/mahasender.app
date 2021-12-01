@@ -25,7 +25,7 @@ const TopBar: React.FC = () => {
   const [isHomePage, setIsHomePage] = useState<boolean>(false)
 
   useEffect(() => {
-    if (!account || error instanceof ChainUnsupportedError) setShowWarning(true)
+    if (!account) setShowWarning(true)
     else setShowWarning(false)
   }, [error, addPopup, account])
 
@@ -51,6 +51,7 @@ const TopBar: React.FC = () => {
   }, [account, core, connect, processNetwork])
 
   console.log('showWarning', showWarning)
+  console.log('account', account)
 
   return (
     <TopBarContainer>
@@ -61,7 +62,7 @@ const TopBar: React.FC = () => {
         <WarningMsg id={'WarningMsg'}>
           <div className={'row_all_center mo_single_line_column'}>
             <TextWrapper
-              text={`Please make sure you are connected to a wallet on ${config.networkName}.`}
+              text={`Please make sure you are connected to the wallet.`}
               align={'center'}
             />
             {config.networkSetupDocLink && (
@@ -79,9 +80,9 @@ const TopBar: React.FC = () => {
       )}
       {
         <AlertSnackbar
-          open={error instanceof ChainUnsupportedError}
+          open={showWarning}
           title={'Error connecting with Wallet'}
-          subTitle={`Please make sure you are connected to a wallet on ${config.networkName}.`}
+          subTitle={`Please make sure you are connected to a wallet.`}
         />
       }
       <StyledTopBar>
