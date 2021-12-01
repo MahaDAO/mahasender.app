@@ -36,6 +36,7 @@ export default function Confirm(props: ConfirmProps) {
   const [addressArray, setAddressArray] = useState<any[]>([])
   const [valuesArray, setValuesArray] = useState<any[]>([])
   const [listOfAddresses, setListOfAddresses] = useState<any[]>([])
+  const [disableSendBtn, setDisableSendBtn] = useState<boolean>(false)
 
   useEffect(() => {
     let addresses: any[]
@@ -82,6 +83,7 @@ export default function Confirm(props: ConfirmProps) {
 
   const sendHandler = () => {
     console.log('sendHandler', addressArray, valuesArray)
+    setDisableSendBtn(true)
     bulkTransferAction(() => {
       handleNext()
     }, setTxHashes)
@@ -145,7 +147,11 @@ export default function Confirm(props: ConfirmProps) {
           />
         </div>
         <div className={'flex1'}>
-          <Button text={'Send'} onClick={sendHandler} />
+          <Button
+            text={'Send'}
+            onClick={sendHandler}
+            disabled={disableSendBtn}
+          />
         </div>
       </div>
     </section>

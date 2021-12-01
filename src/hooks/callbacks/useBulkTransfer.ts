@@ -5,6 +5,8 @@ import {useTransactionAdder} from '../../state/transactions/hooks'
 import useCore from '../useCore'
 import { useAddPopup } from '../../state/application/hooks';
 import formatErrorMessage from '../../utils/formatErrorMessage';
+import { truncateMiddle } from '../../utils'
+
 
 const useBulkTransfer = (
   tokenAddress: any,
@@ -34,10 +36,16 @@ const useBulkTransfer = (
           gasOptions
         );
 
+        
+       
         addTransaction(
           response,
           {
-            summary:''
+            summary:  `Hash ${truncateMiddle(
+              response.hash,
+              12,
+              '...',
+            )}`
           }
         )
 

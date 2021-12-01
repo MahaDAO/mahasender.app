@@ -1,21 +1,21 @@
-import React from 'react';
-import styled from 'styled-components';
-import { format } from 'timeago.js';
+import React from 'react'
+import styled from 'styled-components'
+import { format } from 'timeago.js'
 
-import IconLoader from '../../../../IconLoader';
+import IconLoader from '../../../../IconLoader'
 
-import config from '../../../../../config';
-import { TransactionDetails } from '../../../../../utils/interface';
+import config from '../../../../../config'
+import { TransactionDetails } from '../../../../../utils/interface'
 
 const TransactionWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-`;
+`
 
 const IconWrapper = styled.div<{ pending: boolean; success?: boolean }>`
   color: ${({ pending, success, theme }) =>
     pending ? theme.primary1 : success ? theme.green1 : theme.red1};
-`;
+`
 
 const StateWrapper = styled.div<{ pending: boolean; success?: boolean }>`
   color: ${({ pending, success, theme }) =>
@@ -24,17 +24,19 @@ const StateWrapper = styled.div<{ pending: boolean; success?: boolean }>`
   font-weight: normal;
   font-size: 12px;
   line-height: 130%;
-`;
+`
 
 interface TransactionProps {
-  tx: TransactionDetails;
+  tx: TransactionDetails
 }
 
 const SingleTransaction: React.FC<TransactionProps> = ({ tx }) => {
-  const summary = tx.summary;
-  const pending = !tx.receipt;
+  const summary = tx.summary
+  const pending = !tx.receipt
   const success =
-    !pending && tx && (tx.receipt?.status === 1 || typeof tx.receipt?.status === 'undefined');
+    !pending &&
+    tx &&
+    (tx.receipt?.status === 1 || typeof tx.receipt?.status === 'undefined')
   const date = tx?.confirmedTime || tx?.addedTime
 
   return (
@@ -49,9 +51,7 @@ const SingleTransaction: React.FC<TransactionProps> = ({ tx }) => {
         )}
       </IconWrapper>
       <InfoSection>
-        <Title
-          href={`${config.etherscanUrl}/tx/${tx.hash}`}
-          target="_blank">
+        <Title href={`${config.etherscanUrl}/tx/${tx.hash}`} target="_blank">
           {summary ?? tx.hash}
         </Title>
         <Date>{format(date)}</Date>
@@ -60,15 +60,15 @@ const SingleTransaction: React.FC<TransactionProps> = ({ tx }) => {
         {pending ? 'Pending' : success ? '' : 'Failed'}
       </StateWrapper>
     </TransactionWrapper>
-  );
-};
+  )
+}
 
 const InfoSection = styled.div`
   flex: 1;
   text-align: left;
   margin-bottom: 16px;
   margin-left: 14px;
-`;
+`
 
 const Title = styled.a`
   font-style: normal;
@@ -81,7 +81,7 @@ const Title = styled.a`
   &:hover {
     color: rgba(255, 255, 255, 0.88);
   }
-`;
+`
 
 const Date = styled.p`
   font-style: normal;
@@ -90,6 +90,6 @@ const Date = styled.p`
   line-height: 130%;
   color: rgba(255, 255, 255, 0.64);
   margin-bottom: 0;
-`;
+`
 
-export default SingleTransaction;
+export default SingleTransaction

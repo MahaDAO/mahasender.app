@@ -98,6 +98,8 @@ function Prepare(props: PrepareProps) {
     return core.tokens[key]
   })
 
+  // const listOfTokens = [];
+
   const stringTokens: any = listOfTokens?.map((item: any, i: number) => {
     return { address: item.address, symbol: item.symbol, decimal: item.decimal }
   })
@@ -114,6 +116,33 @@ function Prepare(props: PrepareProps) {
   const [inputTokenValue, setInputTokenValue] = useState('')
   const [lineNumbers, setLineNumbers] = useState<number[]>([])
   const [selectedToken, setSelectedToken] = useState<any>(storedSelectedToken)
+
+  const [open, toggleOpen] = useState(false)
+
+  const handleClose = () => {
+    setDialogValue({
+      address: '',
+      decimal: '',
+      symbol: '',
+    })
+    toggleOpen(false)
+  }
+
+  const [dialogValue, setDialogValue] = useState({
+    address: '',
+    decimal: '',
+    symbol: '',
+  })
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setSelectedToken({
+      address: dialogValue.address,
+      decimal: dialogValue.decimal,
+      symbol: dialogValue.symbol,
+    })
+    handleClose()
+  }
 
   useEffect(() => {
     handleError()
@@ -194,6 +223,8 @@ function Prepare(props: PrepareProps) {
   }
 
   const handleError = () => {
+    setAddressError([])
+
     listOfAddresses?.forEach((item: any, i: any, listOfAddresses: any) => {
       if (!ethers.utils.isAddress(item.adrs))
         setAddressError((prevArray: any) => [
@@ -271,6 +302,7 @@ function Prepare(props: PrepareProps) {
   }
 
   console.log('lineNumbers', lineNumbers)
+  console.log('selectedToken', selectedToken)
 
   console.log('listOfAddresses', listOfAddresses)
 
@@ -301,7 +333,53 @@ function Prepare(props: PrepareProps) {
           <Autocomplete
             value={selectedToken}
             onChange={async (e, token) => {
+              console.log('token', token)
+              if (typeof token === 'string') {
+                if (ethers.utils.isAddress(token)) {
+                  const contractOfToken = await new Contract(
+                    token,
+                    ABIS['IERC20'],
+                    core.provider,
+                  )
+                  console.log('contractOfToken', contractOfToken)
+                  const decimal = await contractOfToken?.decimals()
+                  const symbol = await contractOfToken?.symbol()
+                  console.log('symbol', symbol)
+
+                  setSelectedToken([
+                    ...selectedToken,
+                    new ERC20(token, core.provider, symbol, decimal),
+                  ])
+                }
+              } else {
+                setSelectedToken(token)
+              }
+              // if(typeof token === 'string'){
+              //   setTimeout(() => {
+              //     toggleOpen(true);
+              //     setDialogValue({
+              //       address: token,
+              //       symbol: '',
+              //       decimal: ''
+              //     });
+              //   });
+              // }
               setSelectedToken(token)
+            }}
+            filterOptions={(options, params) => {
+              const filtered = filter(options, params)
+
+              console.log('options', options, 'params', params)
+
+              // Suggest the creation of a new value
+              if (params.inputValue !== '') {
+                filtered.push({
+                  address: params.inputValue,
+                })
+              }
+
+              return filtered
+              // return filterTokenHandler(options, params)
             }}
             id="combo-box-demo"
             options={listOfTokens}
@@ -461,9 +539,7 @@ function Prepare(props: PrepareProps) {
         </section>
       ) : null}
 
-      {/* <AccountButton showWarning={showWarning} /> */}
-
-      {!account ? (
+      {/* {!account ? (
         <Button
           text="Connect"
           tracking_id={'connect_wallet'}
@@ -481,7 +557,12 @@ function Prepare(props: PrepareProps) {
           onClick={() => handleNext(listOfAddresses)}
           disabled={!disableNextBtn}
         />
-      )}
+      )} */}
+      <Button
+        text={'Next'}
+        onClick={() => handleNext(listOfAddresses)}
+        disabled={!disableNextBtn}
+      />
     </section>
   )
 }

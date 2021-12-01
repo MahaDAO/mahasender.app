@@ -1,10 +1,10 @@
 import styled from 'styled-components'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { ChainUnsupportedError, useWallet } from 'use-wallet'
+import detectEthereumProvider from '@metamask/detect-provider'
 
+import useCore from '../../hooks/useCore'
 import theme from '../../theme'
-// import '../../scripts/headerWarning.js';
-
 import IconLoader from '../IconLoader'
 import AlertSnackbar from '../AlertSnackbar'
 import MobileNav from './components/MobileNav'
@@ -16,17 +16,41 @@ import { useAddPopup } from '../../state/application/hooks'
 import ProductLogo from '../../assets/icons/brandLogo/ProductLogo.png'
 
 const TopBar: React.FC = () => {
+  const core = useCore()
+  const addPopup = useAddPopup()
+  const { account, error, connect } = useWallet()
   const [showMobileMenu, toggleMobileMenu] = useState(false)
   const [showTxModal, setShowTxModal] = useState<boolean>(false)
   const [showWarning, setShowWarning] = React.useState<boolean>(false)
-
-  const addPopup = useAddPopup()
-  const { account, error } = useWallet()
+  const [isHomePage, setIsHomePage] = useState<boolean>(false)
 
   useEffect(() => {
     if (!account || error instanceof ChainUnsupportedError) setShowWarning(true)
     else setShowWarning(false)
   }, [error, addPopup, account])
+
+  const processNetwork = useCallback(async () => {
+    const provider: any = await detectEthereumProvider()
+    console.log('provider', provider)
+
+    if (!isHomePage) {
+      if (provider) {
+        const chainId = Number(
+          await provider.request({ method: 'eth_chainId' }),
+        )
+        console.log('chainId', chainId, core.config.chainId)
+        // setShowWarning(chainId !== core.config.chainId)
+      }
+    } else {
+      setShowWarning(false)
+    }
+  }, [core, isHomePage])
+
+  useEffect(() => {
+    processNetwork()
+  }, [account, core, connect, processNetwork])
+
+  console.log('showWarning', showWarning)
 
   return (
     <TopBarContainer>
