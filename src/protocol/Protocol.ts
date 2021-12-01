@@ -20,7 +20,7 @@ export class Protocol {
 
   ARTH: ERC20;
   MAHA: ERC20;
-  SCLP: ERC20;
+  // SCLP: ERC20;
 
   tokens: {
     [name: string]: ERC20;
@@ -40,13 +40,13 @@ export class Protocol {
 
     this.ARTH = new ERC20(deployments.ARTHStablecoin.address, provider, 'ARTH', 18);
     this.MAHA = new ERC20(deployments.MahaSender.address, provider, 'MAHA', 18);
-    this.SCLP = new ERC20(deployments.Scallop.address, provider, 'SLP', 18);
+    // this.SCLP = new ERC20(deployments.Scallop.address, provider, 'SLP', 18);
 
     
     this.tokens = {
       ARTH: this.ARTH,
       MAHA: this.MAHA,
-      SCLP: this.SCLP
+      // SCLP: this.SCLP
     };
 
     this.config = cfg;
@@ -68,7 +68,7 @@ export class Protocol {
 
     const tokens = [
       this.MAHA,
-      this.SCLP,
+      // this.SCLP,
       this.ARTH
     ];
 

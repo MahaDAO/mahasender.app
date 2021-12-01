@@ -70,4 +70,4 @@ export const POOLS: POOL[] = [
 
 export const EARN_FARMS: string[] = [ "USDC" ]
 
-export default CONFIGURATIONS[process.env.REACT_APP_NETWORK || "maticMumbai"]
+export default CONFIGURATIONS[process.env.REACT_APP_NETWORK || "rinkeby"]

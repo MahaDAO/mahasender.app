@@ -9,6 +9,8 @@ import GreenOutline from '../../assets/icons/checkbox/GreenOutline.svg'
 import { useAllTransactions } from '../../state/transactions/hooks'
 import { truncateMiddle } from '../../utils'
 import IconLoader from '../../components/IconLoader'
+import config from '../../config'
+
 interface SendProps {
   txHashes: string[]
   handleBack: () => void
@@ -21,51 +23,6 @@ export default function Send(props: SendProps) {
   const [txConfirmed, setTxConfirmed] = useState<boolean>(true)
   const [txMined, setTxMined] = useState<boolean>(false)
 
-  // const transactionData = () => {
-  //   Object.keys(allTransactions)?.map((key: any, i: number, txns) => {
-  //     const summary = allTransactions[key].summary
-  //     const pending = !allTransactions[key].receipt
-  //     const success =
-  //       !pending &&
-  //       allTransactions[key] &&
-  //       (allTransactions[key].receipt?.status === 1 ||
-  //         typeof allTransactions[key].receipt?.status === 'undefined')
-
-  //     console.log('txns.length', txns.length - 1, i, success)
-
-  //     if (i === txns.length - 1 && success) {
-  //       console.log('last')
-  //       // setTxMined(true)
-  //     }
-
-  //     return (
-  //       <TxnHashDiv>
-  //         <div>
-  //           <TextWrapper
-  //             text={`${truncateMiddle(allTransactions[key].hash, 12, '...')}`}
-  //             fontWeight={300}
-  //             fontSize={14}
-  //             lineHeight={'130%'}
-  //           />
-  //         </div>
-
-  //         <IconWrapper pending={pending} success={success}>
-  //           {pending ? (
-  //             <IconLoader iconName={'ColoredPending'} iconType={'status'} />
-  //           ) : success ? (
-  //             <IconLoader iconName={'ColoredSuccess'} iconType={'status'} />
-  //           ) : (
-  //             <IconLoader iconName={'ColoredAlert'} iconType={'status'} />
-  //           )}
-  //         </IconWrapper>
-  //       </TxnHashDiv>
-  //     )
-  //   })
-  // }
-
-  console.log('HERE', txHashes)
-  console.log('Object.keys(allTransactions)', Object.keys(allTransactions))
-  console.log('txMined', txMined)
   return (
     <section>
       {txMined ? (
@@ -128,8 +85,17 @@ export default function Send(props: SendProps) {
             }
 
             return (
-              <TxnHashDiv>
-                <div>
+              <TxnHashDiv
+                href={`${config.etherscanUrl}/tx/${allTransactions[key].hash}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <a
+                  href={`${config.etherscanUrl}/tx/${allTransactions[key].hash}`}
+                  target={'_blank'}
+                  rel="noreferrer"
+                  className={'noUnderline'}
+                >
                   <TextWrapper
                     text={`${truncateMiddle(
                       allTransactions[key].hash,
@@ -140,7 +106,7 @@ export default function Send(props: SendProps) {
                     fontSize={14}
                     lineHeight={'130%'}
                   />
-                </div>
+                </a>
 
                 <IconWrapper pending={pending} success={success}>
                   {pending ? (
@@ -181,7 +147,7 @@ const IconWrapper = styled.div<{ pending: boolean; success?: boolean }>`
     pending ? '#D74D26' : success ? '#178A50' : '#BA1E38'};
 `
 
-const TxnHashDiv = styled.div`
+const TxnHashDiv = styled.a`
   padding: 12px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 6px;
@@ -189,6 +155,7 @@ const TxnHashDiv = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
+  text-decoration: none;
 `
 
 const SuccessAlert = styled.div`

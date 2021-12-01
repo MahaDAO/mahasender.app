@@ -91,18 +91,13 @@ function Prepare(props: PrepareProps) {
   const { account, connect } = useWallet()
   const core = useCore()
 
-  console.log('core', core)
-
   const listOfTokens: ERC20[] = Object.keys(core.tokens).map((key) => {
-    console.log('key', key)
     return core.tokens[key]
   })
 
-  // const listOfTokens = [];
-
-  const stringTokens: any = listOfTokens?.map((item: any, i: number) => {
-    return { address: item.address, symbol: item.symbol, decimal: item.decimal }
-  })
+  // const stringTokens: any = listOfTokens?.map((item: any, i: number) => {
+  //   return { address: item.address, symbol: item.symbol, decimal: item.decimal }
+  // })
 
   const InputOption = ['Upload File', 'Insert Manually']
 
@@ -116,6 +111,16 @@ function Prepare(props: PrepareProps) {
   const [inputTokenValue, setInputTokenValue] = useState('')
   const [lineNumbers, setLineNumbers] = useState<number[]>([])
   const [selectedToken, setSelectedToken] = useState<any>(storedSelectedToken)
+  const [stringTokens, setStringTokens] = useState<any[]>(
+    listOfTokens?.map((item: any, i: number) => {
+      return {
+        address: item.address,
+        symbol: item.symbol,
+        decimal: item.decimal,
+      }
+    }),
+  )
+  const [tokenInputValue, setTokenInputValue] = useState<string>('')
 
   const [open, toggleOpen] = useState(false)
 
@@ -153,15 +158,9 @@ function Prepare(props: PrepareProps) {
     setEnteredAdrs(list.join('\n'))
     setEnteredAdrsFn(list.join('\n'))
 
-    console.log('while useeffect')
-
-    console.log('listOfAddresses.length', listOfAddresses.length)
-
     if (listOfAddresses.length > 0) {
       setLineNumbers([])
       for (let i = 1; i <= listOfAddresses.length; i++) {
-        console.log('i', i)
-        console.log('lineNumbers', lineNumbers)
         setLineNumbers((oldArray) => [...oldArray, i])
       }
     }
@@ -182,9 +181,6 @@ function Prepare(props: PrepareProps) {
     ethers.utils.isAddress(selectedToken?.address) &&
     addressError?.length === 0 &&
     listOfAddresses?.length !== 0
-
-  console.log('disableNextBtn', disableNextBtn)
-  console.log('listOfAddresses', listOfAddresses)
 
   const handleManualData = () => {
     let addresses: any[]
@@ -278,7 +274,6 @@ function Prepare(props: PrepareProps) {
 
   const filterTokenHandler = async (options: any, params: any) => {
     const filtered = filter(options, params)
-    console.log('params', params)
 
     if (params.inputValue !== '' && !filtered.length) {
       if (ethers.utils.isAddress(params?.inputValue)) {
@@ -287,10 +282,8 @@ function Prepare(props: PrepareProps) {
           ABIS['IERC20'],
           core.provider,
         )
-        console.log('contractOfToken', contractOfToken)
         const decimal = await contractOfToken?.decimals()
         const symbol = await contractOfToken?.symbol()
-        console.log('symbol', symbol)
 
         filtered.push(
           new ERC20(params?.inputValue, core.provider, symbol, decimal),
@@ -300,11 +293,6 @@ function Prepare(props: PrepareProps) {
 
     return filtered
   }
-
-  console.log('lineNumbers', lineNumbers)
-  console.log('selectedToken', selectedToken)
-
-  console.log('listOfAddresses', listOfAddresses)
 
   return (
     <section>
@@ -331,50 +319,44 @@ function Prepare(props: PrepareProps) {
       <div className={'row_spaceBetween_center marginB24'}>
         <div style={{ flex: 9, marginRight: '32px' }}>
           <Autocomplete
+            loading={true}
             value={selectedToken}
+            inputValue={tokenInputValue}
             onChange={async (e, token) => {
-              console.log('token', token)
-              if (typeof token === 'string') {
-                if (ethers.utils.isAddress(token)) {
-                  const contractOfToken = await new Contract(
-                    token,
+              if (token && typeof token?.address === 'string') {
+                if (ethers.utils.isAddress(token.address)) {
+                  const contractOfToken = new Contract(
+                    token.address,
                     ABIS['IERC20'],
                     core.provider,
                   )
-                  console.log('contractOfToken', contractOfToken)
+
                   const decimal = await contractOfToken?.decimals()
                   const symbol = await contractOfToken?.symbol()
-                  console.log('symbol', symbol)
-
-                  setSelectedToken([
-                    ...selectedToken,
-                    new ERC20(token, core.provider, symbol, decimal),
-                  ])
+                  setSelectedToken(
+                    new ERC20(token.address, core.provider, symbol, decimal),
+                  )
+                  setTokenInputValue(`${symbol} - ${tokenInputValue}`)
+                  setStringTokens(
+                    _.uniq([
+                      ...stringTokens,
+                      { address: token.address, symbol, decimal },
+                    ]),
+                  )
                 }
               } else {
                 setSelectedToken(token)
               }
-              // if(typeof token === 'string'){
-              //   setTimeout(() => {
-              //     toggleOpen(true);
-              //     setDialogValue({
-              //       address: token,
-              //       symbol: '',
-              //       decimal: ''
-              //     });
-              //   });
-              // }
-              setSelectedToken(token)
             }}
+            onInputChange={(e, val) => setTokenInputValue(val)}
             filterOptions={(options, params) => {
               const filtered = filter(options, params)
-
-              console.log('options', options, 'params', params)
-
               // Suggest the creation of a new value
               if (params.inputValue !== '') {
                 filtered.push({
                   address: params.inputValue,
+                  symbol: '',
+                  decimal: '',
                 })
               }
 
@@ -382,9 +364,11 @@ function Prepare(props: PrepareProps) {
               // return filterTokenHandler(options, params)
             }}
             id="combo-box-demo"
-            options={listOfTokens}
+            options={stringTokens}
             getOptionLabel={(option: any) => {
-              return `${option.symbol} - ${option.address}`
+              if (option.symbol.length > 0)
+                return `${option.symbol} - ${option.address}`
+              return `${option.address}`
             }}
             getOptionSelected={(option, value) =>
               option.address === value.address

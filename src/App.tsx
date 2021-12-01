@@ -69,13 +69,17 @@ const App: React.FC = () => {
   const isMobile = useMediaQuery({ maxWidth: '600px' })
   isMobileGlobal = isMobile
 
+  console.log('core', core)
+
   useEffect(() => {
     // @ts-ignore
-    if (window.ethereum)
+    if (window.ethereum) {
       // @ts-ignore
       window.ethereum.on('chainChanged', (chainId) => {
-        window.location.reload()
+        console.log('chainId test', chainId, Number(chainId))
+        // window.location.reload()
       })
+    }
   }, [])
 
   if (!window.ethereum) return <NoMetamaskNotice />

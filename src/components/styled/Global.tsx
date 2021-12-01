@@ -25,6 +25,10 @@ const GlobalStyles = createGlobalStyle`
     text-decoration: underline;
   }
 
+  .noUnderline{
+    text-decoration: none;
+  }
+
   .divider {
     border: 1px solid rgba(194, 181, 181, 0.3)
   }
