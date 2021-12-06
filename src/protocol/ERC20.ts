@@ -20,7 +20,6 @@ class ERC20 {
 
 	connect(signerOrProvider: Signer | Provider) {
 		this.contract = new Contract(this.address, ABI, signerOrProvider)
-		console.log("this.contract", this.contract)
 	}
 
 	get estimateGas() {

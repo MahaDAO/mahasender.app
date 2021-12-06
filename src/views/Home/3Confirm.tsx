@@ -59,10 +59,7 @@ export default function Confirm(props: ConfirmProps) {
 
   useEffect(() => {
     if (listOfAddresses?.length > 0) {
-      console.log('useeffect if')
-
       listOfAddresses?.map((item: any) => {
-        console.log('item', item.adrs, item.value)
         setAddressArray((state) => [...state, item.adrs])
         setValuesArray((state) => [
           ...state,
@@ -78,11 +75,8 @@ export default function Confirm(props: ConfirmProps) {
     valuesArray,
     textAreaFields.noOfTxns,
   )
-  console.log('balanceToDecimal', balanceToDecimal('1'))
-  console.log('addressArray', addressArray, valuesArray)
 
   const sendHandler = () => {
-    console.log('sendHandler', addressArray, valuesArray)
     setDisableSendBtn(true)
     bulkTransferAction(() => {
       handleNext()

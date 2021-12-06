@@ -19,12 +19,10 @@ const useBulkTransfer = (
   const addTransaction = useTransactionAdder();
 
   const action = useCallback(async (callback?: () => void, setTxHashes?: (txHashes: string[]) => void): Promise<void> => {
-    console.log('inside try')
+
     try {
       const gasOptions = core.gasOptions();
       const contract = core.contracts.MahaSender;
-
-      console.log('useBulkTransfer contract', contract)
       
       let j: number = 0;
       const txHashes: string[] = [];

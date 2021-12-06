@@ -72,8 +72,6 @@ export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
     (state) => state.transactions,
   )
 
-  console.log('state', chainId, state)
-
   return chainId ? state[chainId] ?? {} : {}
 }
 

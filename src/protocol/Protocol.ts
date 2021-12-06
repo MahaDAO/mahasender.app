@@ -36,8 +36,6 @@ export class Protocol {
       this.contracts[name] = new Contract(deployment.address, ABIS[deployment.abi], provider);
     }
 
-    console.log('deployments', deployments)
-
     this.ARTH = new ERC20(deployments.ARTHStablecoin.address, provider, 'ARTH', 18);
     this.MAHA = new ERC20(deployments.MahaSender.address, provider, 'MAHA', 18);
     // this.SCLP = new ERC20(deployments.Scallop.address, provider, 'SLP', 18);

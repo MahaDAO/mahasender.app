@@ -36,12 +36,6 @@ export default function Approve(props: ApproveProps) {
 
   const tokenBalance = useTokenBalance(textAreaFields.selectedToken)
 
-  console.log(
-    'core.contracts',
-    core.contracts,
-    core.contracts.MahaSender.address,
-  )
-
   const [approveStatus, approve] = useApprove(
     textAreaFields.selectedToken,
     core.contracts.MahaSender.address,
@@ -82,16 +76,7 @@ export default function Approve(props: ApproveProps) {
 
   const disableNextBtn = !textAreaFields.inSufficientBal
 
-  console.log('ethBalance', ethBalance)
-  console.log(
-    'tokenBalance',
-    tokenBalance.isLoading,
-    tokenBalance.value.toString(),
-  )
-
   // if (isApproved) handleNext()
-
-  console.log('isApproved', isApproved)
 
   return (
     <section>
@@ -214,6 +199,7 @@ export default function Approve(props: ApproveProps) {
           <Button
             text={'Confirm'}
             onClick={() => {
+              approve()
               console.log('approve', approve())
             }}
             disabled={!disableNextBtn}

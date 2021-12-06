@@ -86,8 +86,6 @@ export default function Home() {
       })
     }
 
-    console.log('activeStep', activeStep)
-
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
     setTimeout(() => setAmountRadio(`${activeStep + 1}`), 200)
   }
@@ -100,8 +98,6 @@ export default function Home() {
   const handleReset = () => {
     setActiveStep(0)
   }
-
-  console.log('textAreaFields', textAreaFields)
 
   function getStepContent(step: number) {
     switch (step) {
@@ -142,8 +138,6 @@ export default function Home() {
         return 'Unknown step'
     }
   }
-
-  console.log('activeStep', activeStep)
 
   return (
     <div>

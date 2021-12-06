@@ -46,9 +46,6 @@ const TxModal: React.FC<props> = ({ openModal, onDismiss }) => {
     onDismiss()
   }
 
-  console.log('allTransactions', allTransactions)
-  console.log('sortedRecentTransactions', sortedRecentTransactions)
-
   if (!openModal) return null
 
   return (
