@@ -92,10 +92,6 @@ function Prepare(props: PrepareProps) {
   const { account, connect, chainId, networkName } = useWallet()
   const core = useCore()
 
-  const listOfTokens: ERC20[] = Object.keys(core.tokens).map((key) => {
-    return core.tokens[key]
-  })
-
   // const stringTokens: any = listOfTokens?.map((item: any, i: number) => {
   //   return { address: item.address, symbol: item.symbol, decimal: item.decimal }
   // })
@@ -112,19 +108,32 @@ function Prepare(props: PrepareProps) {
   const [inputTokenValue, setInputTokenValue] = useState('')
   const [lineNumbers, setLineNumbers] = useState<number[]>([])
   const [selectedToken, setSelectedToken] = useState<any>(storedSelectedToken)
-  const [stringTokens, setStringTokens] = useState<any[]>(
-    listOfTokens?.map((item: any, i: number) => {
-      return {
-        address: item.address,
-        symbol: item.symbol,
-        decimal: item.decimal,
-      }
-    }),
-  )
+  const [listOfTokens, setListOfTokens] = useState<ERC20[]>([])
+  const [stringTokens, setStringTokens] = useState<any[]>([])
   const [tokenInputValue, setTokenInputValue] = useState<string>('')
   const [showWarning, setShowWarning] = useState<boolean>(false)
 
   const [open, toggleOpen] = useState(false)
+
+  useEffect(() => {
+    setListOfTokens(
+      Object.keys(core.tokens).map((key) => {
+        return core.tokens[key]
+      }),
+    )
+  }, [core.tokens])
+
+  useEffect(() => {
+    setStringTokens(
+      listOfTokens?.map((item: any, i: number) => {
+        return {
+          address: item.address,
+          symbol: item.symbol,
+          decimal: item.decimal,
+        }
+      }),
+    )
+  }, [listOfTokens])
 
   const handleClose = () => {
     setDialogValue({
