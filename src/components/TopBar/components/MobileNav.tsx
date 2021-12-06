@@ -95,7 +95,7 @@ const MobileNav = (props: props) => {
               onClick={() => {
                 connect('injected')
                   .then(() => {
-                    localStorage.removeItem('disconnectWallet')
+                    // localStorage.removeItem('disconnectWallet')
                   })
                   .catch((e) => {})
               }}

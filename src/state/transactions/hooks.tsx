@@ -3,11 +3,12 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { TransactionResponse } from '@ethersproject/providers'
 
-import config from '../../config'
+// import config from '../../config'
 import { AppDispatch, AppState } from '../index'
 import { useAddPopup } from '../application/hooks'
 import { TransactionDetails } from '../../utils/interface'
 import { addTransaction, clearAllTransactions } from './actions'
+import useCore from '../../hooks/useCore'
 
 /**
  * Helper that can take a ethers library transaction response and
@@ -126,11 +127,14 @@ export function useClearAllTransactions(): {
 } {
   const { chainId } = useWallet()
   const dispatch = useDispatch<AppDispatch>()
+  const core = useCore()
 
   return {
     clearAllTransactions: useCallback(
       () =>
-        dispatch(clearAllTransactions({ chainId: chainId || config.chainId })),
+        dispatch(
+          clearAllTransactions({ chainId: chainId || core.config.chainId }),
+        ),
       [chainId, dispatch],
     ),
   }

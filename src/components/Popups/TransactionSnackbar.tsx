@@ -11,8 +11,9 @@ import '../../customCss/Custom-Snackbar.css'
 import IconLoader from '../IconLoader'
 import TextWrapper from '../TextWrapper'
 
-import config from '../../config'
+// import config from '../../config'
 import { PopupContent } from '../../utils/interface'
+import useCore from '../../hooks/useCore'
 
 interface TxButtonProps {
   notificationCount?: number
@@ -38,6 +39,8 @@ const CustomizedSnackbars: React.FC<TxButtonProps> = ({
 }) => {
   const classes = useStyles()
   const [openSnackbar, setOpen] = React.useState(open)
+
+  const core = useCore()
 
   const isScucess = content?.txn?.success
   const isLoading = content?.txn?.loading
@@ -135,9 +138,9 @@ const CustomizedSnackbars: React.FC<TxButtonProps> = ({
           }
           fontWeight={300}
         />
-        {config.etherscanUrl !== '' && content?.txn?.hash && (
+        {core.config.etherscanUrl !== '' && content?.txn?.hash && (
           <AnchorTag
-            href={`${config.etherscanUrl}/tx/${content?.txn?.hash}`}
+            href={`${core.config.etherscanUrl}/tx/${content?.txn?.hash}`}
             rel="noopener noreferrer"
             target="_blank"
           >

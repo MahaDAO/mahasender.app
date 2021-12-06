@@ -41,6 +41,7 @@ const ChooseWallet = (props: Iprops) => {
     connect('walletconnect')
       .then(() => {
         onClose()
+        localStorage.setItem('wallet', 'walletConnect')
       })
       .catch((e) => {
         console.log('error', e)

@@ -1,29 +1,30 @@
-import { useWallet } from 'use-wallet';
-import React, { createContext, useEffect, useState } from 'react';
+import { useWallet } from 'use-wallet'
+import React, { createContext, useEffect, useState } from 'react'
 
-import config from '../../config';
-import Protocol from '../../protocol';
-import { ProtocolContext } from '../../utils/interface';
+import Protocol from '../../protocol'
+import defaultConfig, { getConfig } from '../../config'
+import { ProtocolContext } from '../../utils/interface'
 
-export const Context = createContext<ProtocolContext>({ core: new Protocol(config) });
+export const Context = createContext<ProtocolContext>({
+  core: new Protocol(defaultConfig),
+})
 
 export const ProtocolProvider: React.FC = ({ children }) => {
-  const [core, setCore] = useState<Protocol>(new Protocol(config));
+  const [core, setCore] = useState<Protocol>(new Protocol(defaultConfig))
 
-  const { ethereum, account } = useWallet();
+  const { ethereum, account, chainId } = useWallet()
 
   useEffect(() => {
-    if (!core && config) {
-      const newCore = new Protocol(config);
-      if (account) {
-        // Wallet was unlocked at initialization.
-        newCore.unlockWallet(ethereum, account);
-      }
-      setCore(newCore);
-    } else if (account) {
-      core.unlockWallet(ethereum, account);
-    }
-  }, [account, core, ethereum]);
+    const config = getConfig(chainId || 1)
+    if (!config) return setCore(new Protocol(defaultConfig))
+    setCore(new Protocol(config))
+  }, [chainId])
 
-  return <Context.Provider value={{ core }}>{children}</Context.Provider>;
-};
+  useEffect(() => {
+    if (account) {
+      core.unlockWallet(ethereum, account)
+    }
+  }, [account, core, ethereum])
+
+  return <Context.Provider value={{ core }}>{children}</Context.Provider>
+}

@@ -9,7 +9,8 @@ import GreenOutline from '../../assets/icons/checkbox/GreenOutline.svg'
 import { useAllTransactions } from '../../state/transactions/hooks'
 import { truncateMiddle } from '../../utils'
 import IconLoader from '../../components/IconLoader'
-import config from '../../config'
+// import config from '../../config'
+import useCore from '../../hooks/useCore'
 
 interface SendProps {
   txHashes: string[]
@@ -18,6 +19,7 @@ interface SendProps {
 
 export default function Send(props: SendProps) {
   const { handleBack, txHashes } = props
+  const core = useCore()
   const allTransactions = useAllTransactions()
 
   const [txConfirmed, setTxConfirmed] = useState<boolean>(true)
@@ -86,12 +88,12 @@ export default function Send(props: SendProps) {
 
             return (
               <TxnHashDiv
-                href={`${config.etherscanUrl}/tx/${allTransactions[key].hash}`}
+                href={`${core.config.etherscanUrl}/tx/${allTransactions[key].hash}`}
                 target="_blank"
                 rel="noreferrer"
               >
                 <a
-                  href={`${config.etherscanUrl}/tx/${allTransactions[key].hash}`}
+                  href={`${core.config.etherscanUrl}/tx/${allTransactions[key].hash}`}
                   target={'_blank'}
                   rel="noreferrer"
                   className={'noUnderline'}

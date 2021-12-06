@@ -89,7 +89,7 @@ function Prepare(props: PrepareProps) {
     setEnteredAdrsFn,
   } = props
 
-  const { account, connect, chainId } = useWallet()
+  const { account, connect, chainId, networkName } = useWallet()
   const core = useCore()
 
   const listOfTokens: ERC20[] = Object.keys(core.tokens).map((key) => {
@@ -337,19 +337,6 @@ function Prepare(props: PrepareProps) {
                     ABIS['IERC20'],
                     core.provider,
                   )
-
-                  console.log('contractOfToken', contractOfToken)
-                  console.log(
-                    'network',
-                    (await contractOfToken?.provider.getNetwork()).chainId,
-                    chainId,
-                  )
-                  console.log('token', token)
-                  console.log(
-                    'network',
-                    (await contractOfToken?.provider.getNetwork()).chainId !==
-                      chainId,
-                  )
                   if (
                     (await contractOfToken?.provider.getNetwork()).chainId !==
                     chainId
@@ -549,25 +536,6 @@ function Prepare(props: PrepareProps) {
         </section>
       ) : null}
 
-      {/* {!account ? (
-        <Button
-          text="Connect"
-          tracking_id={'connect_wallet'}
-          onClick={() => {
-            connect('injected')
-              .then(() => {
-                localStorage.removeItem('disconnectWallet')
-              })
-              .catch((e) => {})
-          }}
-        />
-      ) : (
-        <Button
-          text={'Next'}
-          onClick={() => handleNext(listOfAddresses)}
-          disabled={!disableNextBtn}
-        />
-      )} */}
       <Button
         text={'Next'}
         onClick={() => handleNext(listOfAddresses)}

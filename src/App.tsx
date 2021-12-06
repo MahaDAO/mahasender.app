@@ -1,46 +1,34 @@
 import { Provider } from 'react-redux'
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import React, { useEffect } from 'react'
 import { UseWalletProvider } from 'use-wallet'
 import { SnackbarProvider } from 'notistack'
 import { useMediaQuery } from 'react-responsive'
 import { HashRouter as Router } from 'react-router-dom'
-import FormControl from '@material-ui/core/FormControl'
-import Radio from '@material-ui/core/Radio'
-import RadioGroup from '@material-ui/core/RadioGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 
 import store from './state'
 import Updaters from './state/Updaters'
 import ProtocolProvider from './context/Provider'
 import ModalsProvider from './context/Modals'
 import TopBar from './components/TopBar'
-import config from './config'
 import Home from './views/Home'
 import NoMetamaskNotice from './components/NoMetamaskNotice'
 import Popups from './components/Popups'
 import useCore from './hooks/useCore'
+import { getSupportedChains } from './config'
 
 const Providers: React.FC = ({ children }) => {
-  console.log('body', {
-    injected: {
-      chainId: [config.chainId],
-    },
-    walletconnect: {
-      chainId: config.chainId,
-      rpcUrl: config.defaultProvider,
-    },
-  })
+  const core = useCore()
+  const supportedChains = getSupportedChains()
 
   return (
     <UseWalletProvider
       connectors={{
         injected: {
-          chainId: [config.chainId],
+          chainId: supportedChains,
         },
         walletconnect: {
-          chainId: config.chainId,
-          rpcUrl: config.defaultProvider,
+          chainId: supportedChains,
+          rpcUrl: core.config.defaultProvider,
         },
       }}
     >
@@ -69,20 +57,16 @@ const App: React.FC = () => {
   const isMobile = useMediaQuery({ maxWidth: '600px' })
   isMobileGlobal = isMobile
 
-  console.log('core', core)
-
   useEffect(() => {
     // @ts-ignore
     if (window.ethereum) {
       // @ts-ignore
       window.ethereum.on('chainChanged', (chainId) => {
-        console.log('chainId test', chainId, Number(chainId))
         // window.location.reload()
       })
     }
   }, [])
 
-  if (!window.ethereum) return <NoMetamaskNotice />
   if (!core) return <div />
 
   return (

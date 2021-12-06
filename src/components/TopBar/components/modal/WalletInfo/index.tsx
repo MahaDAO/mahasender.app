@@ -60,7 +60,7 @@ const WalletInfo = () => {
         noText={'Cancel'}
         yesAction={() => {
           setShowConfirmationModal(false)
-          localStorage.setItem('disconnectWallet', '1')
+          // localStorage.setItem('disconnectWallet', '1')
           window.location.reload()
         }}
         noAction={() => setShowConfirmationModal(false)}

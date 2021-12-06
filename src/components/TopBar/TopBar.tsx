@@ -2,6 +2,12 @@ import styled from 'styled-components'
 import React, { useEffect, useState, useCallback } from 'react'
 import { ChainUnsupportedError, useWallet } from 'use-wallet'
 import detectEthereumProvider from '@metamask/detect-provider'
+import FormControl from '@material-ui/core/FormControl'
+import TextField from '@material-ui/core/TextField'
+import Select from '@material-ui/core/Select'
+import MenuItem from '@material-ui/core/MenuItem'
+import InputBase from '@material-ui/core/InputBase'
+import { BigNumber, utils } from 'ethers'
 
 import useCore from '../../hooks/useCore'
 import theme from '../../theme'
@@ -10,7 +16,7 @@ import AlertSnackbar from '../AlertSnackbar'
 import MobileNav from './components/MobileNav'
 import AccountButton from './components/AccountButton'
 import TxModal from './components/modal/Transaction/TxModal'
-import config from '../../config'
+// import config from '../../config'
 import TextWrapper from '../TextWrapper'
 import { useAddPopup } from '../../state/application/hooks'
 import ProductLogo from '../../assets/icons/brandLogo/ProductLogo.png'
@@ -18,27 +24,44 @@ import ProductLogo from '../../assets/icons/brandLogo/ProductLogo.png'
 const TopBar: React.FC = () => {
   const core = useCore()
   const addPopup = useAddPopup()
-  const { account, error, connect } = useWallet()
+  const { account, error, connect, ethereum } = useWallet()
   const [showMobileMenu, toggleMobileMenu] = useState(false)
   const [showTxModal, setShowTxModal] = useState<boolean>(false)
   const [showWarning, setShowWarning] = React.useState<boolean>(false)
   const [isHomePage, setIsHomePage] = useState<boolean>(false)
+  const [networkName, setNetworkName] = useState<any>(
+    utils.hexStripZeros(BigNumber.from(core.config.chainId).toHexString()),
+  )
+
+  if (!!window.ethereum) {
+    window.ethereum.autoRefreshOnNetworkChange = false
+  }
 
   useEffect(() => {
     if (!account) setShowWarning(true)
     else setShowWarning(false)
   }, [error, addPopup, account])
 
+  useEffect(() => {
+    setNetworkName(
+      utils.hexStripZeros(BigNumber.from(core.config.chainId).toHexString()),
+    )
+  }, [core])
+
+  useEffect(() => {
+    switchMetamaskChain(networkName)
+  }, [networkName])
+
+  let walletChainId: any
+
   const processNetwork = useCallback(async () => {
     const provider: any = await detectEthereumProvider()
-    console.log('provider', provider)
 
     if (!isHomePage) {
       if (provider) {
         const chainId = Number(
           await provider.request({ method: 'eth_chainId' }),
         )
-        console.log('chainId', chainId, core.config.chainId)
         // setShowWarning(chainId !== core.config.chainId)
       }
     } else {
@@ -46,18 +69,71 @@ const TopBar: React.FC = () => {
     }
   }, [core, isHomePage])
 
+  const switchMetamaskChain = (networkName: string) => {
+    if (!ethereum?.request) return
+
+    if (ethereum) {
+      ethereum
+        .request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: networkName }],
+        })
+        .then(() => {
+          // window.location.reload()
+          console.log('then switchMetamaskChain')
+        })
+        .catch((error: any) => {
+          if (error.code === 4902) addNetworkToMetamask()
+        })
+    }
+  }
+
+  const addNetworkToMetamask = () => {
+    if (!ethereum?.request) return
+    if (ethereum) {
+      ethereum
+        .request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: utils.hexStripZeros(
+                BigNumber.from(core.config.chainId).toHexString(),
+              ),
+              chainName: core.config.networkName,
+              rpcUrls: [],
+              iconUrls: [],
+              blockExplorerUrls: [core.config.etherscanUrl],
+              nativeCurrency: {
+                name: core.config.blockchainTokenName,
+                symbol: core.config.blockchainToken,
+                decimals: core.config.blockchainTokenDecimals,
+              },
+            },
+          ],
+        })
+        .then(() => {
+          console.log('then addNetworkToMetamask')
+          // window.location.reload()
+        })
+        .catch((error: any) => {
+          if (error.code === 4001) {
+            // EIP-1193 userRejectedRequest error.
+            console.log('We cannot encrypt anything without the key.')
+          }
+        })
+    }
+  }
+
+  const handleSelect = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setNetworkName(event.target.value as string)
+  }
+
   useEffect(() => {
     processNetwork()
   }, [account, core, connect, processNetwork])
 
-  console.log('showWarning', showWarning)
-  console.log('account', account)
-
   return (
     <TopBarContainer>
-      <div id={'showWarning'} style={{ display: 'none' }}>
-        {showWarning && <p></p>}
-      </div>
       {showWarning && (
         <WarningMsg id={'WarningMsg'}>
           <div className={'row_all_center mo_single_line_column'}>
@@ -65,8 +141,8 @@ const TopBar: React.FC = () => {
               text={`Please make sure you are connected to the wallet.`}
               align={'center'}
             />
-            {config.networkSetupDocLink && (
-              <div onClick={() => window.open(config.networkSetupDocLink)}>
+            {core.config.networkSetupDocLink && (
+              <div onClick={() => window.open(core.config.networkSetupDocLink)}>
                 <TextWrapper
                   text={'Check RPC details here.'}
                   Fcolor={theme.color.primary[300]}
@@ -81,7 +157,7 @@ const TopBar: React.FC = () => {
       {
         <AlertSnackbar
           open={showWarning}
-          title={'Error connecting with Wallet'}
+          title={'Connect to the wallet.'}
           subTitle={`Please make sure you are connected to a wallet.`}
         />
       }
@@ -92,7 +168,22 @@ const TopBar: React.FC = () => {
               <div className="row_all_center">
                 <img src={ProductLogo} width={269} height={44} alt={'logo'} />
               </div>
+
               <div className="flex_row_start_center">
+                <div className={'marginR20'}>
+                  <FormControl>
+                    <Select
+                      labelId="demo-customized-select-label"
+                      id="demo-customized-select"
+                      value={networkName}
+                      onChange={handleSelect}
+                      // defaultValue={'Rinkeby'}
+                    >
+                      <MenuItem value={'0x4'}>Rinkeby</MenuItem>
+                      <MenuItem value={'0x13881'}>Matic Mumbai</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
                 {!!account && (
                   <div>
                     <TxModal

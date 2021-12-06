@@ -3,7 +3,7 @@ import { useWallet } from 'use-wallet';
 import { useCallback, useEffect, useState } from 'react';
 
 import useCore from '../useCore';
-import config from '../../config';
+// import config from '../../config';
 import ERC20 from '../../protocol/ERC20';
 
 const useAllowance = (token: ERC20, spender: string, pendingApproval?: boolean) => {
@@ -27,7 +27,7 @@ const useAllowance = (token: ERC20, spender: string, pendingApproval?: boolean) 
         ),
       );
 
-      let refreshInterval = setInterval(fetchAllowance, config.refreshInterval);
+      let refreshInterval = setInterval(fetchAllowance, core.config.refreshInterval);
       return () => clearInterval(refreshInterval);
     }
   }, [account, core.isUnlocked, fetchAllowance, spender, token]);

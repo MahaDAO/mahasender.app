@@ -1,7 +1,7 @@
-import { Configuration, POOL } from "./utils/interface"
+import { Configuration } from "./utils/interface"
 
 const CONFIGURATIONS: { [env: string]: Configuration } = {
-	rinkeby: {
+	4: {
 		baseLaunchDate: new Date(),
 		networkName: "Rinkeby",
 		chainId: 4,
@@ -16,20 +16,7 @@ const CONFIGURATIONS: { [env: string]: Configuration } = {
 		defaultToken: "USDC",
 		networkSetupDocLink: "https://gist.github.com/tschubotz/8047d13a2d2ac8b2a9faa3a74970c7ef"
 	},
-	// ethereum: {
-	// 	networkName: "Ethereum Mainnet",
-	// 	chainId: 1,
-	// 	etherscanUrl: "https://etherscan.io",
-	// 	defaultProvider: "https://mainnet.infura.io/v3/747e9d3bface477cb469aafb2e9642a9",
-	// 	deployments: require("./protocol/deployments/ethereum.json"),
-	// 	refreshInterval: 10000,
-	// 	gasLimitMultiplier: 1.1,
-	// 	blockchainToken: "ETH",
-	// 	blockchainTokenName: "ETHEREUM",
-	// 	blockchainTokenDecimals: 18,
-	// 	defaultToken: "ETH"
-	// },
-	maticMumbai: {
+	80001: {
 		networkName: "Matic Mumbai Testnet",
 		chainId: 80001,
 		etherscanUrl: "https://mumbai.polygonscan.com",
@@ -43,31 +30,9 @@ const CONFIGURATIONS: { [env: string]: Configuration } = {
 		blockchainTokenDecimals: 18,
 		networkSetupDocLink: "https://docs.polygon.technology/docs/develop/metamask/config-polygon-on-metamask/"
 	}
-	// matic: {
-	// 	networkName: "Matic Mainnet",
-	// 	chainId: 137,
-	// 	etherscanUrl: "https://polygonscan.com",
-	// 	defaultProvider: "https://polygon-rpc.com/",
-	// 	deployments: require("./protocol/deployments/matic.json"),
-	// 	refreshInterval: 10000,
-	// 	gasLimitMultiplier: 1.1,
-	// 	blockchainToken: "MATIC",
-	// 	blockchainTokenName: "MATIC",
-	// 	defaultToken: "ETH",
-	// 	blockchainTokenDecimals: 18,
-	// 	networkSetupDocLink: "https://docs.polygon.technology/docs/develop/metamask/config-polygon-on-metamask/"
-	// }
 }
 
-export const POOLS: POOL[] = [
-	{
-		token1: "USDC",
-		token2: "USDT",
-		platform: "DFYN",
-		lpToken: "USDTUSDCLP"
-	}
-]
+export const getConfig = (chainId: number) => CONFIGURATIONS[chainId]
+export const getSupportedChains = (): number[] => Object.keys(CONFIGURATIONS).map((i) => Number(i))
 
-export const EARN_FARMS: string[] = [ "USDC" ]
-
-export default CONFIGURATIONS[process.env.REACT_APP_NETWORK || "rinkeby"]
+export default CONFIGURATIONS[4]

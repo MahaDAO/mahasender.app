@@ -4,8 +4,9 @@ import { format } from 'timeago.js'
 
 import IconLoader from '../../../../IconLoader'
 
-import config from '../../../../../config'
+// import config from '../../../../../config'
 import { TransactionDetails } from '../../../../../utils/interface'
+import useCore from '../../../../../hooks/useCore'
 
 const TransactionWrapper = styled.div`
   display: flex;
@@ -31,6 +32,8 @@ interface TransactionProps {
 }
 
 const SingleTransaction: React.FC<TransactionProps> = ({ tx }) => {
+  const core = useCore()
+
   const summary = tx.summary
   const pending = !tx.receipt
   const success =
@@ -51,7 +54,10 @@ const SingleTransaction: React.FC<TransactionProps> = ({ tx }) => {
         )}
       </IconWrapper>
       <InfoSection>
-        <Title href={`${config.etherscanUrl}/tx/${tx.hash}`} target="_blank">
+        <Title
+          href={`${core.config.etherscanUrl}/tx/${tx.hash}`}
+          target="_blank"
+        >
           {summary ?? tx.hash}
         </Title>
         <Date>{format(date)}</Date>
