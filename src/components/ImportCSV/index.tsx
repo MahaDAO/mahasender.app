@@ -11,7 +11,7 @@ interface Iprops {
   // type: 'investors'
   // onError?: () => void
   // errorData?: (data: any) => void
-  listOfAddresses?: (items: any) => void
+  listOfAddresses: (items: any) => void
   content?: any
 }
 
@@ -46,19 +46,16 @@ const ImportCSV = (props: Iprops) => {
       const wsname = readedData.SheetNames[0]
       const ws = readedData.Sheets[wsname]
 
+      console.log('ws', ws)
+
       /* Convert array to json*/
-      const dataParse = await XLSX.utils.sheet_to_json(ws, { header: 1 })
-      const textData = await XLSX.utils.sheet_to_txt(ws)
-
-      let list = await dataParse.map((item: any) => {
-        item.toString()
-      })
-
-      console.log('list', list)
+      const dataParse = await XLSX.utils
+        .sheet_to_json(ws, { header: 1 })
+        .map((item: any) => item.toString())
 
       console.log('dataParse', dataParse)
-      // console.log('textData', textData)
-      // listOfAddresses(list)
+
+      listOfAddresses(dataParse)
     }
 
     setSelectedFile(formData)

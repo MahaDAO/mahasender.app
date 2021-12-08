@@ -270,10 +270,9 @@ const GlobalStyles = createGlobalStyle`
     font-size: 14px;
     font-family: 'Inter';
     font-weight: 300;
-    line-height: '140%';
-    color: rgba(255, 255, 255, 0.64);
     width: 100%;
-    resize: none;
+    resize: none !important;
+    height: 100%;
   }
 
   textarea:focus{

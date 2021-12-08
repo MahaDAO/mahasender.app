@@ -194,8 +194,7 @@ function Prepare(props: PrepareProps) {
     listOfAddresses?.length !== 0
 
   const handleManualData = () => {
-    let addresses: any[]
-    addresses = []
+    let addresses: any[] = []
 
     if (enteredAdrs.length > 0) {
       enteredAdrs.split(/\n/g).map((adrs: string, i: number) => {
@@ -213,6 +212,8 @@ function Prepare(props: PrepareProps) {
   }
 
   const handleCSVData = (data: any) => {
+    console.log('data', data)
+
     let addresses: any[]
     addresses = []
     data?.map((item: any, i: number) => {
@@ -225,7 +226,7 @@ function Prepare(props: PrepareProps) {
         value: `${valueTobeSent}`,
       })
     })
-
+    setaddAdrsDropdown('Insert Manually')
     setListOfAddresses(addresses)
   }
 
@@ -283,27 +284,8 @@ function Prepare(props: PrepareProps) {
     setaddAdrsDropdown(event.target.value as string)
   }
 
-  const filterTokenHandler = async (options: any, params: any) => {
-    const filtered = filter(options, params)
-
-    if (params.inputValue !== '' && !filtered.length) {
-      if (ethers.utils.isAddress(params?.inputValue)) {
-        const contractOfToken = await new Contract(
-          params?.inputValue,
-          ABIS['IERC20'],
-          core.provider,
-        )
-        const decimal = await contractOfToken?.decimals()
-        const symbol = await contractOfToken?.symbol()
-
-        filtered.push(
-          new ERC20(params?.inputValue, core.provider, symbol, decimal),
-        )
-      }
-    }
-
-    return filtered
-  }
+  console.log('enteredAdrs', enteredAdrs)
+  console.log('listOfAdrs', listOfAddresses)
 
   return (
     <section>
@@ -459,33 +441,42 @@ function Prepare(props: PrepareProps) {
       <UploadFileContainer>
         {addAdrsDropdown === 'Upload File' ? (
           <div>
-            <ImportCSV />
+            <ImportCSV listOfAddresses={handleCSVData} />
           </div>
         ) : (
-          <div style={{ display: 'flex' }}>
-            <div style={{ marginRight: '10px' }}>
+          <div
+            style={{
+              display: 'flex',
+              overflowY: 'scroll',
+              height: '150px',
+            }}
+          >
+            <div style={{ marginRight: '10px', height: '100%' }}>
               {lineNumbers?.map((item: any, i: number) => (
-                <TextWrapper
-                  key={i}
-                  text={`${item}`}
-                  fontFamily={'Inter'}
-                  fontWeight={300}
-                  fontSize={14}
-                  lineHeight={'140%'}
-                  Fcolor={'rgba(255, 255, 255, 0.88)'}
-                  className={'marginTB2'}
-                />
+                <div>
+                  <TextWrapper
+                    key={i}
+                    text={`${item}`}
+                    fontFamily={'Inter'}
+                    fontWeight={300}
+                    fontSize={14}
+                    lineHeight={'140%'}
+                    Fcolor={'rgba(255, 255, 255, 0.88)'}
+                    className={'marginTB2'}
+                  />
+                </div>
               ))}
             </div>
             <textarea
-              rows={6}
+              rows={lineNumbers?.length || 2}
               value={enteredAdrs}
               onChange={(e) => {
                 setEnteredAdrs(e.target.value)
               }}
               onBlur={handleManualData}
               onKeyDown={handleKeyDown}
-              // onPaste={handleManualData}
+              onPaste={handleManualData}
+              className={'scroll'}
             />
           </div>
         )}
