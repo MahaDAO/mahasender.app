@@ -89,7 +89,7 @@ function Prepare(props: PrepareProps) {
     setEnteredAdrsFn,
   } = props
 
-  const { account, connect, chainId, networkName } = useWallet()
+  const { account, chainId, status } = useWallet()
   const core = useCore()
 
   const [listOfAddresses, setListOfAddresses] = useState<any>([])
@@ -270,10 +270,7 @@ function Prepare(props: PrepareProps) {
     setaddAdrsDropdown(event.target.value as string)
   }
 
-  console.log('enteredAdrs', enteredAdrs)
-  console.log('listOfAdrs', listOfAddresses)
-  console.log('selectedToken', selectedToken)
-  console.log('tokenInputValue', tokenInputValue)
+  console.log('status', status)
 
   return (
     <section>

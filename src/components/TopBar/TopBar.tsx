@@ -24,7 +24,7 @@ import ProductLogo from '../../assets/icons/brandLogo/ProductLogo.png'
 const TopBar: React.FC = () => {
   const core = useCore()
   const addPopup = useAddPopup()
-  const { account, error, connect, ethereum } = useWallet()
+  const { account, error, connect, ethereum, status } = useWallet()
   const [showMobileMenu, toggleMobileMenu] = useState(false)
   const [showTxModal, setShowTxModal] = useState<boolean>(false)
   const [showWarning, setShowWarning] = React.useState<boolean>(false)
@@ -70,7 +70,8 @@ const TopBar: React.FC = () => {
   }, [core, isHomePage])
 
   const switchMetamaskChain = (networkName: string) => {
-    if (!ethereum?.request) return
+    if (!ethereum?.request || !window.ethereum) return
+    // if (!ethereum && !!window.ethereum)
 
     if (ethereum) {
       ethereum
@@ -173,20 +174,23 @@ const TopBar: React.FC = () => {
               </div>
 
               <div className="flex_row_start_center">
-                <div className={'marginR20'}>
-                  <FormControl>
-                    <Select
-                      labelId="demo-customized-select-label"
-                      id="demo-customized-select"
-                      value={networkName}
-                      onChange={handleSelect}
-                      // defaultValue={'Rinkeby'}
-                    >
-                      <MenuItem value={'0x4'}>Rinkeby</MenuItem>
-                      <MenuItem value={'0x13881'}>Matic Mumbai</MenuItem>
-                    </Select>
-                  </FormControl>
-                </div>
+                {status === 'connected' ? (
+                  <div className={'marginR20'}>
+                    <FormControl>
+                      <Select
+                        labelId="demo-customized-select-label"
+                        id="demo-customized-select"
+                        value={networkName}
+                        onChange={handleSelect}
+                        // defaultValue={'Rinkeby'}
+                      >
+                        <MenuItem value={'0x4'}>Rinkeby</MenuItem>
+                        <MenuItem value={'0x13881'}>Matic Mumbai</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>
+                ) : null}
+
                 {!!account && (
                   <div>
                     <TxModal
