@@ -132,6 +132,9 @@ const TopBar: React.FC = () => {
     processNetwork()
   }, [account, core, connect, processNetwork])
 
+  console.log('core', core)
+  console.log('ethereum', ethereum)
+
   return (
     <TopBarContainer>
       {showWarning && (

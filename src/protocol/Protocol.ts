@@ -37,7 +37,7 @@ export class Protocol {
     }
 
     this.ARTH = new ERC20(deployments.ARTHStablecoin.address, provider, 'ARTH', 18);
-    this.MAHA = new ERC20(deployments.MahaSender.address, provider, 'MAHA', 18);
+    this.MAHA = new ERC20(deployments.MahaToken.address, provider, 'MAHA', 18);
     // this.SCLP = new ERC20(deployments.Scallop.address, provider, 'SLP', 18);
 
     

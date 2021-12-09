@@ -99,6 +99,14 @@ export default function Home() {
     setActiveStep(0)
   }
 
+  console.log(
+    'insuff',
+    textAreaFields.noOfTokens,
+    Number(tokenBalance.value.toString()),
+  )
+
+  console.log('textAreaFields', textAreaFields)
+
   function getStepContent(step: number) {
     switch (step) {
       case 0:

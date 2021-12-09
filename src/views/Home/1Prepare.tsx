@@ -92,20 +92,12 @@ function Prepare(props: PrepareProps) {
   const { account, connect, chainId, networkName } = useWallet()
   const core = useCore()
 
-  // const stringTokens: any = listOfTokens?.map((item: any, i: number) => {
-  //   return { address: item.address, symbol: item.symbol, decimal: item.decimal }
-  // })
-
-  const InputOption = ['Upload File', 'Insert Manually']
-
   const [listOfAddresses, setListOfAddresses] = useState<any>([])
   const [enteredAdrs, setEnteredAdrs] = useState<any>(storedEnteredAdrs)
   const [addressError, setAddressError] = useState<any>([])
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone()
   const [addAdrsDropdown, setaddAdrsDropdown] = useState<string | null>(
     'Insert Manually',
   )
-  const [inputTokenValue, setInputTokenValue] = useState('')
   const [lineNumbers, setLineNumbers] = useState<number[]>([])
   const [selectedToken, setSelectedToken] = useState<any>(storedSelectedToken)
   const [listOfTokens, setListOfTokens] = useState<ERC20[]>([])
@@ -135,31 +127,6 @@ function Prepare(props: PrepareProps) {
     )
   }, [listOfTokens])
 
-  const handleClose = () => {
-    setDialogValue({
-      address: '',
-      decimal: '',
-      symbol: '',
-    })
-    toggleOpen(false)
-  }
-
-  const [dialogValue, setDialogValue] = useState({
-    address: '',
-    decimal: '',
-    symbol: '',
-  })
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setSelectedToken({
-      address: dialogValue.address,
-      decimal: dialogValue.decimal,
-      symbol: dialogValue.symbol,
-    })
-    handleClose()
-  }
-
   useEffect(() => {
     handleError()
 
@@ -171,9 +138,12 @@ function Prepare(props: PrepareProps) {
 
     if (listOfAddresses.length > 0) {
       setLineNumbers([])
+
       for (let i = 1; i <= listOfAddresses.length; i++) {
         setLineNumbers((oldArray) => [...oldArray, i])
       }
+    } else {
+      setLineNumbers([])
     }
   }, [listOfAddresses])
 
@@ -199,15 +169,30 @@ function Prepare(props: PrepareProps) {
     if (enteredAdrs.length > 0) {
       enteredAdrs.split(/\n/g).map((adrs: string, i: number) => {
         let indexOfComma = adrs.indexOf(',')
-        let valueTobeSent = adrs.slice(indexOfComma + 1, adrs.length)
+        let valueTobeSent
+        if (indexOfComma === -1) {
+          console.log('no value')
+          valueTobeSent = 0
+          addresses?.push({
+            line: i + 1,
+            adrs: `${adrs}`,
+            value: `${valueTobeSent}`,
+          })
+        } else {
+          valueTobeSent = adrs.slice(indexOfComma + 1, adrs.length)
+          addresses?.push({
+            line: i + 1,
+            adrs: `${adrs.slice(0, indexOfComma)}`,
+            value: `${valueTobeSent}`,
+          })
+        }
 
-        addresses?.push({
-          line: i + 1,
-          adrs: `${adrs.slice(0, indexOfComma)}`,
-          value: `${valueTobeSent}`,
-        })
+        console.log('indexOfComma', indexOfComma, valueTobeSent)
       })
+      console.log('addresses', addresses)
       setListOfAddresses(addresses)
+    } else {
+      setListOfAddresses([])
     }
   }
 
@@ -234,6 +219,7 @@ function Prepare(props: PrepareProps) {
     setAddressError([])
 
     listOfAddresses?.forEach((item: any, i: any, listOfAddresses: any) => {
+      console.log('item.adrs', item.adrs)
       if (!ethers.utils.isAddress(item.adrs))
         setAddressError((prevArray: any) => [
           ...prevArray,
@@ -286,6 +272,8 @@ function Prepare(props: PrepareProps) {
 
   console.log('enteredAdrs', enteredAdrs)
   console.log('listOfAdrs', listOfAddresses)
+  console.log('selectedToken', selectedToken)
+  console.log('tokenInputValue', tokenInputValue)
 
   return (
     <section>
@@ -321,10 +309,12 @@ function Prepare(props: PrepareProps) {
             value={selectedToken}
             inputValue={tokenInputValue}
             onChange={async (e, token) => {
-              if (token && typeof token?.address === 'string') {
-                if (ethers.utils.isAddress(token.address)) {
+              console.log('token', token)
+              if (tokenInputValue.length > 0) {
+                console.log('mainif')
+                if (ethers.utils.isAddress(token?.address)) {
                   const contractOfToken = new Contract(
-                    token.address,
+                    token?.address,
                     ABIS['IERC20'],
                     core.provider,
                   )
@@ -348,8 +338,24 @@ function Prepare(props: PrepareProps) {
                     )
                   }
                 }
+              } else if (token && typeof token?.address === 'string') {
+                console.log(
+                  'else',
+                  token.address,
+                  core.provider,
+                  token.symbol,
+                  token.decimal,
+                )
+                setSelectedToken(
+                  new ERC20(
+                    token.address,
+                    core.provider,
+                    token.symbol,
+                    token.decimal,
+                  ),
+                )
               } else {
-                // setSelectedToken(token)
+                console.log('neither input value nor token')
               }
             }}
             onInputChange={(e, val) => setTokenInputValue(val)}
@@ -477,6 +483,9 @@ function Prepare(props: PrepareProps) {
               onKeyDown={handleKeyDown}
               onPaste={handleManualData}
               className={'scroll'}
+              placeholder={
+                'Insert address and amount separated by a comma \ne.g. 0x3bd31a863a799cf0ef9f6d678a8c39a1f8af0a9b,0.1'
+              }
             />
           </div>
         )}

@@ -33,7 +33,7 @@ const useTokenBalanceOf = (token: ERC20, address: string) => {
 			if (core && address) {
 				fetchBalance().catch((err) => {
 					setBalance(NON_LOADING_DEFAULT_BASIC_STATE)
-					console.error(`Failed to fetch token balance of ${address} for ${token.address}: ${err.stack} `)
+					console.error(`Failed to fetch token balance of ${address} for ${token?.address}: ${err.stack} `)
 				})
 			} else {
 				setBalance(NON_LOADING_DEFAULT_BASIC_STATE)

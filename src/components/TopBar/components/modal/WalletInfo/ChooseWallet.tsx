@@ -1,6 +1,7 @@
 import React from 'react'
 import { useWallet } from 'use-wallet'
 import styled from 'styled-components'
+import { BigNumber, utils } from 'ethers'
 
 import Modal from '../../../../CustomModal'
 import IconLoader from '../../../../IconLoader'
@@ -11,6 +12,7 @@ import walletConnectimg from '../../../../../assets/images/walletConnect.png'
 
 import { noOp } from '../../../../../utils/constants'
 import { useAddPopup } from '../../../../../state/application/hooks'
+import useCore from '../../../../../hooks/useCore'
 
 interface Iprops {
   openModal: boolean
@@ -21,9 +23,12 @@ const ChooseWallet = (props: Iprops) => {
   const { openModal, onClose } = props
 
   const addPopup = useAddPopup()
-  const { connect, connector } = useWallet()
+  const { connect, connector, chainId, ethereum } = useWallet()
+  const core = useCore()
 
   const onMetaMaskClick = () => {
+    // if(core.config.chainId.toString === utils.hexStripZeros(BigNumber.from(core.config.chainId).toHexString()))
+
     if (connector === 'injected') return
 
     connect('injected')
@@ -47,6 +52,12 @@ const ChooseWallet = (props: Iprops) => {
         console.log('error', e)
       })
   }
+
+  console.log(
+    'wallet',
+    ethereum?.chainId,
+    utils.hexStripZeros(BigNumber.from(core.config.chainId).toHexString()),
+  )
 
   return (
     <Modal
