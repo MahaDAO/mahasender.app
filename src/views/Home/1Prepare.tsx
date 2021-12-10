@@ -168,23 +168,26 @@ function Prepare(props: PrepareProps) {
 
     if (enteredAdrs.length > 0) {
       enteredAdrs.split(/\n/g).map((adrs: string, i: number) => {
+        console.log('handleManualData adrs', adrs)
         let indexOfComma = adrs.indexOf(',')
         let valueTobeSent
-        if (indexOfComma === -1) {
-          console.log('no value')
-          valueTobeSent = 0
-          addresses?.push({
-            line: i + 1,
-            adrs: `${adrs}`,
-            value: `${valueTobeSent}`,
-          })
-        } else {
-          valueTobeSent = adrs.slice(indexOfComma + 1, adrs.length)
-          addresses?.push({
-            line: i + 1,
-            adrs: `${adrs.slice(0, indexOfComma)}`,
-            value: `${valueTobeSent}`,
-          })
+        if (adrs.length > 0) {
+          if (indexOfComma === -1) {
+            console.log('no value')
+            valueTobeSent = 0
+            addresses?.push({
+              line: i + 1,
+              adrs: `${adrs}`,
+              value: `${valueTobeSent}`,
+            })
+          } else {
+            valueTobeSent = adrs.slice(indexOfComma + 1, adrs.length)
+            addresses?.push({
+              line: i + 1,
+              adrs: `${adrs.slice(0, indexOfComma)}`,
+              value: `${valueTobeSent}`,
+            })
+          }
         }
 
         console.log('indexOfComma', indexOfComma, valueTobeSent)
@@ -307,7 +310,10 @@ function Prepare(props: PrepareProps) {
             inputValue={tokenInputValue}
             onChange={async (e, token) => {
               console.log('token', token)
-              if (tokenInputValue.length > 0) {
+              if (
+                tokenInputValue.length > 0 &&
+                ethers.utils.isAddress(tokenInputValue)
+              ) {
                 console.log('mainif')
                 if (ethers.utils.isAddress(token?.address)) {
                   const contractOfToken = new Contract(
@@ -336,13 +342,7 @@ function Prepare(props: PrepareProps) {
                   }
                 }
               } else if (token && typeof token?.address === 'string') {
-                console.log(
-                  'else',
-                  token.address,
-                  core.provider,
-                  token.symbol,
-                  token.decimal,
-                )
+                console.log('else if')
                 setSelectedToken(
                   new ERC20(
                     token.address,
@@ -382,6 +382,7 @@ function Prepare(props: PrepareProps) {
             }
             style={{ width: '100%', color: '#fff' }}
             freeSolo
+            selectOnFocus
             renderInput={(params: any) => (
               <TextField
                 {...params}
