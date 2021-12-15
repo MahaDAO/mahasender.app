@@ -1,18 +1,18 @@
 {
 	"MahaToken": {
-		"address": "0x1da35dF9c4AAfbf0EB96240D215611bEC577Ea2f",
+		"address": "0xFF67538f6bbf33288Cc4489cA3014A40f0c389c3",
 		"abi": "IERC20"
 	},
 	"ARTHStablecoin": {
-		"address": "0x7b0E3e32b0b00F896E08b9b564b9C0175a7c9Cad",
+		"address": "0x7d9486eD8AC48fDd905DfcF27c32167a4748c1E4",
 		"abi": "IERC20"
 	},
 	"Scallop": {
-		"address": "0xea6588461F0B357475C6BeE1a22c972C053132E7",
+		"address": "0x94599613B2bFcc66a2d073cE805FD28020C4266C",
 		"abi": "IERC20"
 	},
 	"MahaSender": {
-		"address": "0x3C7611cd37Ab37D8ad84f4C988635Af9D13044f2",
+		"address": "0x8a7D3a29deC6018cE2b8fE6525be667b0F846618",
 		"abi": "MahaSender"
 	}
 }

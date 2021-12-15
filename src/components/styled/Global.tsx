@@ -49,6 +49,10 @@ const GlobalStyles = createGlobalStyle`
     color: #fff !important;
   }
 
+  .whiteText200{
+    color: rgba(255, 255, 255, 0.64) !important;
+  }
+
   .orange_text{
     color:  #FF7F57 !important;
     font-family: 'Inter' !important;
@@ -110,6 +114,10 @@ const GlobalStyles = createGlobalStyle`
     margin: 0 auto !important;
   }
 
+  .marginT-10{
+    margin-top: -10px !important;
+  }
+
   .marginT8{
     margin-top: 8px;
   }
@@ -151,7 +159,7 @@ const GlobalStyles = createGlobalStyle`
   }
 
   .marginB20{
-    margin-bottom: 20px;
+    margin-bottom: 20px !important;
   }
 
   .marginB24{
@@ -188,6 +196,10 @@ const GlobalStyles = createGlobalStyle`
 
   .marginL4{
     margin-left: 4px;
+  }
+
+  .marginL40{
+    margin-left: 40px !important;
   }
 
   /* paddings */

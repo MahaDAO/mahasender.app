@@ -33,6 +33,7 @@ import Confirm from './3Confirm'
 import Send from './4Send'
 import { useWallet } from 'use-wallet'
 import IconLoader from '../../components/IconLoader'
+import { getDisplayBalanceToken } from '../../utils/formatBalance'
 
 function getSteps() {
   return ['Prepare', 'Approve', 'Confirm', 'Send']
@@ -58,10 +59,19 @@ export default function Home() {
   const steps = getSteps()
   const tokenBalance = useTokenBalance(textAreaFields.selectedToken)
 
+  console.log('textAreaFields', textAreaFields)
+
   useEffect(() => {
     if (
       textAreaFields.noOfTokens > 0 &&
-      textAreaFields.noOfTokens > Number(tokenBalance.value.toString())
+      textAreaFields.noOfTokens >
+        Number(
+          getDisplayBalanceToken(
+            tokenBalance.value,
+            textAreaFields.selectedToken,
+            3,
+          ),
+        )
     ) {
       setTextAreaFields({ ...textAreaFields, inSufficientBal: true })
     } else setTextAreaFields({ ...textAreaFields, inSufficientBal: false })
