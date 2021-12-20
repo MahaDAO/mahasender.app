@@ -16,7 +16,10 @@ import ErrorIcon from '../../assets/icons/infoTip/Error.svg'
 import useTokenBalance from '../../hooks/useTokenBalance'
 import useCore from '../../hooks/useCore'
 import useApprove, { ApprovalState } from '../../hooks/callbacks/useApprove'
-import { getDisplayBalanceToken } from '../../utils/formatBalance'
+import {
+  getDisplayBalance,
+  getDisplayBalanceToken,
+} from '../../utils/formatBalance'
 
 interface ApproveProps {
   handleNext: (adrs?: []) => void
@@ -32,24 +35,36 @@ export default function Approve(props: ApproveProps) {
   const ethBalance = ethers.utils.formatEther(balance)
 
   const [amountRadio, setAmountRadio] = useState<string>('exactAmt')
-  const [amountToApprove, setAmountToApprove] = useState<string>('')
+  const [amountToApprove, setAmountToApprove] = useState<number>(
+    textAreaFields.noOfTokens,
+  )
 
   const tokenBalance = useTokenBalance(textAreaFields.selectedToken)
 
   const [approveStatus, approve] = useApprove(
     textAreaFields.selectedToken,
     core.contracts.MahaSender.address,
+    amountToApprove,
   )
 
   const isApproved = useMemo(() => approveStatus === ApprovalState.APPROVED, [
     approveStatus,
   ])
 
-  // const isApproved = false
-
   const isApproving = useMemo(() => approveStatus === ApprovalState.PENDING, [
     approveStatus,
   ])
+
+  console.log(
+    'approveStatus',
+    approveStatus,
+    ApprovalState.APPROVED,
+    isApproved,
+  )
+
+  console.log('textAreaFields.selectedToken', textAreaFields.selectedToken)
+
+  // console.log('2Approve core.signer', core.signer)
 
   useEffect(() => {
     if (amountRadio === 'exactAmt')
@@ -62,7 +77,7 @@ export default function Approve(props: ApproveProps) {
             textAreaFields.selectedToken,
             3,
           ),
-        ).toLocaleString('en-US', { minimumFractionDigits: 3 }),
+        ),
       )
   }, [amountRadio])
 
@@ -112,6 +127,7 @@ export default function Approve(props: ApproveProps) {
         ).toLocaleString('en-US', { minimumFractionDigits: 3 })}`}
         unit={`${textAreaFields.selectedToken.symbol}`}
       />
+
       {/* <SummaryRow
         field={'Approximate cost of operation '}
         amount={'0'}
@@ -139,35 +155,48 @@ export default function Approve(props: ApproveProps) {
           onChange={handleAmountRadio}
           className={'flex_row'}
         >
-          <FormControlLabel
-            value="exactAmt"
-            control={
-              <Radio
-                className={`${
-                  amountRadio === 'exactAmt' ? 'orange_text' : 'rgb256_064_text'
-                }`}
-              />
-            }
-            label="Exact amount to be sent"
-          />
+          <div className={'flex_column'}>
+            <FormControlLabel
+              value="exactAmt"
+              control={
+                <Radio
+                  className={`${
+                    amountRadio === 'exactAmt'
+                      ? 'orange_text'
+                      : 'rgb256_064_text'
+                  }`}
+                />
+              }
+              label="Exact amount to be sent"
+            />
+            <FormHelperText
+              className={'marginL40 marginB20 whiteText200 marginT-10'}
+            >
+              {amountRadio === 'exactAmt' ? `(${amountToApprove})` : ''}{' '}
+            </FormHelperText>
+          </div>
 
-          <FormControlLabel
-            value="fullTokenBal"
-            control={
-              <Radio
-                className={`${
-                  amountRadio === 'fullTokenBal'
-                    ? 'orange_text'
-                    : 'rgb256_064_text'
-                }`}
-              />
-            }
-            label="Your full token balance"
-          />
+          <div className={'flex_column'}>
+            <FormControlLabel
+              value="fullTokenBal"
+              control={
+                <Radio
+                  className={`${
+                    amountRadio === 'fullTokenBal'
+                      ? 'orange_text'
+                      : 'rgb256_064_text'
+                  }`}
+                />
+              }
+              label="Your full token balance"
+            />
+            <FormHelperText
+              className={'marginL40 marginB20 whiteText200 marginT-10'}
+            >
+              {amountRadio === 'fullTokenBal' ? `(${amountToApprove})` : ''}{' '}
+            </FormHelperText>
+          </div>
         </RadioGroup>
-        <FormHelperText className={'marginB42'}>
-          {amountRadio === 'fullTokenBal' ? amountToApprove : ''}{' '}
-        </FormHelperText>
       </FormControl>
       {textAreaFields.inSufficientBal ? (
         <ErrorAlert>

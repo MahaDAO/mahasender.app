@@ -12,12 +12,9 @@ import { getDefaultProvider } from '../utils/provider';
 export class Protocol {
   myAccount!: string;
   signer?: ethers.Signer;
-
   config: Configuration;
   contracts: { [name: string]: Contract };
   provider: ethers.providers.BaseProvider;
-
-
   ARTH: ERC20;
   MAHA: ERC20;
   // SCLP: ERC20;
@@ -40,7 +37,6 @@ export class Protocol {
     this.MAHA = new ERC20(deployments.MahaToken.address, provider, 'MAHA', 18);
     // this.SCLP = new ERC20(deployments.Scallop.address, provider, 'SLP', 18);
 
-    
     this.tokens = {
       ARTH: this.ARTH,
       MAHA: this.MAHA,
@@ -71,8 +67,11 @@ export class Protocol {
     ];
 
     for (const token of tokens) {
-      if (token && token.address) token.connect(this.signer);
+      if (token && token.address) {
+        token.connect(this.signer);
+      }
     }
+
   };
 
   get isUnlocked(): boolean {
