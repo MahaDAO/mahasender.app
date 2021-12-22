@@ -157,194 +157,187 @@ export default function Home() {
     }
   }
 
+  console.log('activeStep === steps.length', activeStep === steps.length)
+
   return (
     <div>
-      {activeStep === steps.length ? (
-        <div>
-          <Typography>All steps completed - you&apos;re finished</Typography>
-          <Button onClick={handleReset} className={'white_text'}>
-            Reset
-          </Button>
-        </div>
-      ) : (
-        <div>
-          <img
-            src={HeadingBgDesign}
-            alt={'HeadingBgDesign'}
-            style={{
-              width: '-webkit-fill-available',
-              position: 'absolute',
-              top: '-40px',
-            }}
+      <div>
+        <img
+          src={HeadingBgDesign}
+          alt={'HeadingBgDesign'}
+          style={{
+            width: '-webkit-fill-available',
+            position: 'absolute',
+            top: '-40px',
+          }}
+        />
+        {/* <img
+          src={HeadingBgDesign}
+          alt={'HeadingBgDesign'}
+          style={{
+            width: '-webkit-fill-available',
+            position: 'absolute',
+            top: '-40px',
+          }}
+        /> */}
+        <HeadingContainer>
+          <TextWrapper
+            text={'Bulk send tokens instantly with zero commission'}
+            fontWeight={'bold'}
+            fontSize={42}
+            lineHeight={'44px'}
+            align={'center'}
+            fontFamily={'Syne'}
+            className={'marginB16'}
           />
-
-          <HeadingContainer>
-            <TextWrapper
-              text={'Bulk send tokens instantly with zero commission'}
-              fontWeight={'bold'}
-              fontSize={42}
-              lineHeight={'44px'}
-              align={'center'}
-              fontFamily={'Syne'}
-              className={'marginB16'}
-            />
-            <TextWrapper
-              text={'The fast and most secure way to bulk send token'}
-              fontWeight={400}
-              fontSize={18}
-              lineHeight={'24px'}
-              align={'center'}
-              fontFamily={'Syne'}
-              Fcolor={'rgba(255, 255, 255, 0.64)'}
-              className={'marginB64'}
-            />
-          </HeadingContainer>
-          <StepCard>
-            <div className={'flex_row marginB6'}>
-              <ProgressDiv
-                className={`marginR4 ${
-                  activeStep === 0 ? 'orange_bg' : 'rgb256_008_bg'
-                }`}
-              ></ProgressDiv>
-              <ProgressDiv
-                className={`marginR4 ${
-                  activeStep === 1 ? 'orange_bg' : 'rgb256_008_bg'
-                }`}
-              ></ProgressDiv>
-              <ProgressDiv
-                className={`marginR4 ${
-                  activeStep === 2 ? 'orange_bg' : 'rgb256_008_bg'
-                }`}
-              ></ProgressDiv>
-              <ProgressDiv
-                className={`${
-                  activeStep === 3 ? 'orange_bg' : 'rgb256_008_bg'
-                }`}
-              ></ProgressDiv>
-            </div>
-            <div>
-              <FormControl
-                component="fieldset"
-                style={{ width: '-webkit-fill-available' }}
+          <TextWrapper
+            text={'The fast and most secure way to bulk send token'}
+            fontWeight={400}
+            fontSize={18}
+            lineHeight={'24px'}
+            align={'center'}
+            fontFamily={'Syne'}
+            Fcolor={'rgba(255, 255, 255, 0.64)'}
+            className={'marginB64'}
+          />
+        </HeadingContainer>
+        <StepCard>
+          <div className={'flex_row marginB6'}>
+            <ProgressDiv
+              className={`marginR4 ${
+                activeStep === 0 ? 'orange_bg' : 'rgb256_008_bg'
+              }`}
+            ></ProgressDiv>
+            <ProgressDiv
+              className={`marginR4 ${
+                activeStep === 1 ? 'orange_bg' : 'rgb256_008_bg'
+              }`}
+            ></ProgressDiv>
+            <ProgressDiv
+              className={`marginR4 ${
+                activeStep === 2 ? 'orange_bg' : 'rgb256_008_bg'
+              }`}
+            ></ProgressDiv>
+            <ProgressDiv
+              className={`${activeStep === 3 ? 'orange_bg' : 'rgb256_008_bg'}`}
+            ></ProgressDiv>
+          </div>
+          <div>
+            <FormControl
+              component="fieldset"
+              style={{ width: '-webkit-fill-available' }}
+            >
+              <RadioGroup
+                aria-label="gender"
+                name="gender1"
+                value={amountRadio}
+                onChange={handleAmountRadio}
+                className={'flex_row marginB40'}
               >
-                <RadioGroup
-                  aria-label="gender"
-                  name="gender1"
-                  value={amountRadio}
-                  onChange={handleAmountRadio}
-                  className={'flex_row marginB40'}
+                <RadioContainer
+                  className={`${activeStep >= 1 ? 'marginT8' : ''}`}
                 >
-                  <RadioContainer
-                    className={`${activeStep >= 1 ? 'marginT8' : ''}`}
-                  >
-                    <FormControlLabel
-                      value={'0'}
-                      control={
-                        activeStep >= 1 ? (
-                          <IconLoader
-                            iconName={'CompletedIcon'}
-                            iconType={'misc'}
-                            className={'marginR8'}
-                          />
-                        ) : (
-                          <Radio
-                            className={`${
-                              activeStep === 0
-                                ? 'orange_text'
-                                : 'rgb256_064_text'
-                            }`}
-                          />
-                        )
-                      }
-                      className={`${
-                        activeStep === 0 ? 'white_text' : 'rgb256_064_text'
-                      }`}
-                      label="Prepare"
-                    />
-                  </RadioContainer>
-                  <RadioContainer
-                    className={`${activeStep >= 2 ? 'marginT8' : ''}`}
-                  >
-                    <FormControlLabel
-                      value={'1'}
-                      control={
-                        activeStep >= 2 ? (
-                          <IconLoader
-                            iconName={'CompletedIcon'}
-                            iconType={'misc'}
-                            className={'marginR8'}
-                          />
-                        ) : (
-                          <Radio
-                            className={`${
-                              activeStep === 1
-                                ? 'orange_text'
-                                : 'rgb256_064_text'
-                            }`}
-                            disabled={activeStep === 0 || activeStep < 1}
-                          />
-                        )
-                      }
-                      label="Approve"
-                      className={`${
-                        activeStep === 1 ? 'white_text' : 'rgb256_064_text'
-                      }`}
-                    />
-                  </RadioContainer>
-                  <RadioContainer
-                    className={`${activeStep >= 3 ? 'marginT8' : 'margin0'}`}
-                  >
-                    <FormControlLabel
-                      value={'2'}
-                      control={
-                        activeStep >= 3 ? (
-                          <IconLoader
-                            iconName={'CompletedIcon'}
-                            iconType={'misc'}
-                            className={'marginR8'}
-                          />
-                        ) : (
-                          <Radio
-                            className={`${
-                              activeStep === 2
-                                ? 'orange_text'
-                                : 'rgb256_064_text'
-                            }`}
-                          />
-                        )
-                      }
-                      label="Confirm"
-                      disabled={activeStep === 1 || activeStep < 2}
-                      className={`${
-                        activeStep === 2 ? 'white_text' : 'rgb256_064_text'
-                      }`}
-                    />
-                  </RadioContainer>
-                  <RadioContainer>
-                    <FormControlLabel
-                      value={'3'}
-                      control={
+                  <FormControlLabel
+                    value={'0'}
+                    control={
+                      activeStep >= 1 ? (
+                        <IconLoader
+                          iconName={'CompletedIcon'}
+                          iconType={'misc'}
+                          className={'marginR8'}
+                        />
+                      ) : (
                         <Radio
                           className={`${
-                            activeStep === 3 ? 'orange_text' : 'rgb256_064_text'
+                            activeStep === 0 ? 'orange_text' : 'rgb256_064_text'
                           }`}
                         />
-                      }
-                      label="Send"
-                      disabled={activeStep === 2 || activeStep < 3}
-                      className={`${
-                        activeStep === 3 ? 'white_text' : 'rgb256_064_text'
-                      }`}
-                    />
-                  </RadioContainer>
-                </RadioGroup>
-              </FormControl>
-            </div>
-            <div className={'divider marginB42'}></div>
-            {getStepContent(activeStep)}
-          </StepCard>
-        </div>
-      )}
+                      )
+                    }
+                    className={`${
+                      activeStep === 0 ? 'white_text' : 'rgb256_064_text'
+                    }`}
+                    label="Prepare"
+                  />
+                </RadioContainer>
+                <RadioContainer
+                  className={`${activeStep >= 2 ? 'marginT8' : ''}`}
+                >
+                  <FormControlLabel
+                    value={'1'}
+                    control={
+                      activeStep >= 2 ? (
+                        <IconLoader
+                          iconName={'CompletedIcon'}
+                          iconType={'misc'}
+                          className={'marginR8'}
+                        />
+                      ) : (
+                        <Radio
+                          className={`${
+                            activeStep === 1 ? 'orange_text' : 'rgb256_064_text'
+                          }`}
+                          disabled={activeStep === 0 || activeStep < 1}
+                        />
+                      )
+                    }
+                    label="Approve"
+                    className={`${
+                      activeStep === 1 ? 'white_text' : 'rgb256_064_text'
+                    }`}
+                  />
+                </RadioContainer>
+                <RadioContainer
+                  className={`${activeStep >= 3 ? 'marginT8' : 'margin0'}`}
+                >
+                  <FormControlLabel
+                    value={'2'}
+                    control={
+                      activeStep >= 3 ? (
+                        <IconLoader
+                          iconName={'CompletedIcon'}
+                          iconType={'misc'}
+                          className={'marginR8'}
+                        />
+                      ) : (
+                        <Radio
+                          className={`${
+                            activeStep === 2 ? 'orange_text' : 'rgb256_064_text'
+                          }`}
+                        />
+                      )
+                    }
+                    label="Confirm"
+                    disabled={activeStep === 1 || activeStep < 2}
+                    className={`${
+                      activeStep === 2 ? 'white_text' : 'rgb256_064_text'
+                    }`}
+                  />
+                </RadioContainer>
+                <RadioContainer>
+                  <FormControlLabel
+                    value={'3'}
+                    control={
+                      <Radio
+                        className={`${
+                          activeStep === 3 ? 'orange_text' : 'rgb256_064_text'
+                        }`}
+                      />
+                    }
+                    label="Send"
+                    disabled={activeStep === 2 || activeStep < 3}
+                    className={`${
+                      activeStep === 3 ? 'white_text' : 'rgb256_064_text'
+                    }`}
+                  />
+                </RadioContainer>
+              </RadioGroup>
+            </FormControl>
+          </div>
+          <div className={'divider marginB42'}></div>
+          {getStepContent(activeStep)}
+        </StepCard>
+      </div>
     </div>
   )
 }
