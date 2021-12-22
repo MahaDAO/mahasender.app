@@ -37,7 +37,7 @@ const MobileNav = (props: props) => {
           opacity: props.openMenu ? 1 : 0,
         }}
       >
-        <TopMenu className="bottom_divider">
+        {/* <TopMenu className="bottom_divider">
           <StyledLink
             exact
             activeClassName="active_sidebar"
@@ -86,7 +86,7 @@ const MobileNav = (props: props) => {
           >
             Report a Bug
           </StyledLinkHref>
-        </BottomMenu>
+        </BottomMenu> */}
         <WalletButton>
           {!account ? (
             <Button

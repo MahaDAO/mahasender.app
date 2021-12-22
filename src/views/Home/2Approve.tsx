@@ -55,17 +55,6 @@ export default function Approve(props: ApproveProps) {
     approveStatus,
   ])
 
-  console.log(
-    'approveStatus',
-    approveStatus,
-    ApprovalState.APPROVED,
-    isApproved,
-  )
-
-  console.log('textAreaFields.selectedToken', textAreaFields.selectedToken)
-
-  // console.log('2Approve core.signer', core.signer)
-
   useEffect(() => {
     if (amountRadio === 'exactAmt')
       setAmountToApprove(textAreaFields.noOfTokens)
@@ -90,8 +79,6 @@ export default function Approve(props: ApproveProps) {
   }
 
   const disableNextBtn = !textAreaFields.inSufficientBal
-
-  // if (isApproved) handleNext()
 
   return (
     <section>

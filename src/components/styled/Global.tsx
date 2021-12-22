@@ -166,6 +166,10 @@ const GlobalStyles = createGlobalStyle`
     margin-bottom: 24px !important;
   }
 
+  .marginB40{
+    margin-bottom: 40px !important;
+  }
+
   .marginB42{
     margin-bottom: 42px !important;
   }
